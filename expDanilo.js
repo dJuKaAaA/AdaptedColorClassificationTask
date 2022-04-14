@@ -1,11 +1,12 @@
 // Danilo magistarski eksperiment
 
-
-
 function main()
 {
     createCanvas();
-    runExperiment();
+    // runExperiment();
+    
+    let colors = new Colors();
+    createStimulus(colors, 54);
 
 }
 
@@ -39,12 +40,66 @@ function clearCanvas()
 function createStimulus(colors, percentage)
 {
     // creates a stimulus and collects information from stimulus
+    let stimulusSize = 200;
+    let pixelSize = 2;
+    let positivePixelsLeft = percentage / 100 * pixelSize * stimulusSize;
+    let negativePixelsLeft = (1 - percentage / 100) * pixelSize * stimulusSize; 
+    let stimulus = [];
 
+    for (let i = 0; i < stimulusSize; ++i)
+    {
+        let row = [];
+        let x = i * pixelSize;
+        for (let j = 0; j < stimulusSize; ++j)
+        {
+            let y = j * pixelSize;
+            let ranNum = Math.random();
+            if (ranNum > 0.5)
+            {
+                if (positivePixelsLeft > 0)
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
+                    --positivePixelsLeft;
+                }
+                else 
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
+                    --negativePixelsLeft;
+                }
+            }
+            else
+            {
+                if (negativePixelsLeft > 0)
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
+                    --negativePixelsLeft;
+                }
+                else 
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
+                    --positivePixelsLeft;
+                }
+            }
+        }
+        stimulus.push(row);
+    }
+
+    drawStimulus(stimulus)
 
 }
 
 function drawStimulus(stimulus)
 {
+    let canvas = document.getElementById("main-canvas");
+    let context = canvas.getContext("2d");
+    for (let row of stimulus)
+    {
+        for (let obj of row)
+        {
+            context.fillStyle = obj.color;
+            context.fillRect(obj.x, obj.y, obj.size, obj.size);
+        }
+    }
 
 }
 
@@ -78,16 +133,15 @@ function runExperiment()
 
         if (odds.get(percentage.toString()) == 0)
         {
-            oddsLeft.splice(ranIndex, ranIndex + 1);
+            oddsLeft.splice(ranIndex, 1);
         }
 
         createStimulus(colors, percentage);
     }
 
-
 }
 
-
+// colors class for generating the positive and negative colors
 class Colors 
 {
     constructor()
