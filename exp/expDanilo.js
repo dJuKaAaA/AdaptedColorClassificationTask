@@ -226,7 +226,7 @@ function createStimulus()
 {
     // creates a stimulus and collects information from stimulus
     
-    let stimulusSize = 200;
+    let stimulusSize = 250;
     let pixelSize = 2;
     let positivePixelsLeft = currentPercentage / 100 * pixelSize * stimulusSize;
     let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * stimulusSize; 
@@ -235,10 +235,10 @@ function createStimulus()
     for (let i = 0; i < stimulusSize; ++i)
     {
         let row = [];
-        let x = i * pixelSize + 200;
+        let x = i * pixelSize + 150;
         for (let j = 0; j < stimulusSize; ++j)
         {
-            let y = j * pixelSize + 20;
+            let y = j * pixelSize + 25;
             let ranNum = Math.random();
             if (ranNum > 0.5)
             {
