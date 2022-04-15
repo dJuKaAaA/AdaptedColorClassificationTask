@@ -145,6 +145,8 @@ function initKeyEvents()
             if (eventAvailable.continue)
             {
                 mainDiv.removeChild(document.getElementById("feedback"));
+                if (!window.fullscreen)
+                    document.documentElement.requestFullscreen();
                 nextStimulus();
             }
         }
