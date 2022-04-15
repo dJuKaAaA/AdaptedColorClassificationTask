@@ -90,6 +90,11 @@ function createStimulus(colors, percentage)
 
 function drawStimulus(stimulus)
 {
+    // uses the parameter "stimulus" which is a 2D array which contains objects with
+    // necessary information to draw the stimulus on the canvas 
+    // it contains js objects with attributes: x (for x position), y (for y position),
+    // size (represents pixel size) and color (positive or negative color)
+
     let canvas = document.getElementById("main-canvas");
     let context = canvas.getContext("2d");
     for (let row of stimulus)
