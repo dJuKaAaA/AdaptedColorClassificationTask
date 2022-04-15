@@ -94,9 +94,15 @@ let eventAvailable = {
     continue: false
 }
 
+// determines if the key has already been pressed down
+let isKeyDown = false;
+
 // used for detirmining how long it took the user to answer
 let startTime;
 let endTime;
+
+// variable used for stopping the setTimeout function from executing when the user answer in time
+let timeoutId;
 
 // experiment information based on user's answers
 let expInfo = [[]]
@@ -116,8 +122,16 @@ function initKeyEvents()
     // initializes all keydown event listeners 
     // uses avaliableEvent as indicator for calling appropriate methods
 
+    document.addEventListener("keyup", (event) =>
+    {
+        isKeyDown = false;
+    });
+
     document.addEventListener("keydown", (event) =>
     {
+        if (isKeyDown)
+            return;
+
         if (event.keyCode == 32)
         {
             let mainDiv = document.getElementById("main-container");
@@ -127,15 +141,11 @@ function initKeyEvents()
                 mainDiv.removeChild(document.getElementById("intro"));
                 createCanvas();
                 nextStimulus();
-                eventAvailable.intro = false;
-                eventAvailable.answer = true;
             }
             if (eventAvailable.continue)
             {
                 mainDiv.removeChild(document.getElementById("feedback"));
                 nextStimulus();
-                eventAvailable.continue = false;
-                eventAvailable.answer = true;
             }
         }
         if (eventAvailable.answer)
@@ -152,6 +162,10 @@ function initKeyEvents()
                     {
                         points -= 10;
                         continuePanel(1);
+                    }
+                    else
+                    {
+                        continuePanel(2);
                     }
                     break;
                 case "k":
@@ -193,6 +207,7 @@ function createCanvas()
     canvas.height = 600;
     canvas.style.backgroundColor = "rgb(255, 255, 255)";
     canvas.id = "main-canvas";
+    eventAvailable.intro = false;
 
     mainDiv.appendChild(canvas);
 }
@@ -296,8 +311,11 @@ function nextStimulus()
         oddsLeft.splice(ranIndex, 1);
     }
 
+    eventAvailable.continue = false;
+    eventAvailable.answer = true;
+
     createStimulus();
-    setTimeout(continuePanel, 3000, 2);
+    timeoutId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
 
 }
@@ -308,14 +326,13 @@ function continuePanel(answeredCorrectly)
     // stimulus and waits for the user's input to proceed with the experiment
     // parameter answeredCorrectly expects a number between 0 and 2
     // 0 -> correct, 1 -> incorrect, 2 -> nothing
-    
-    // if the user answers on time, the setTimeout function called will be disabled
-    if (eventAvailable.continue == true)
-        return;
 
     endTime = Date.now();
     let timeTook = endTime - startTime;
-    console.log(timeTook);
+
+    // if the user answered on time
+    if (timeTook < 3000)
+        clearTimeout(timeoutId);
 
     // safety measures
     if (answeredCorrectly < 0)
