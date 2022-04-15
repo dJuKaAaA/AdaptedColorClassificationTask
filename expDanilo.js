@@ -105,6 +105,9 @@ function main()
 
 function initKeyEvents()
 {
+    // initializes all keydown event listeners 
+    // uses avaliableEvent as indicator for calling appropriate methods
+
     document.addEventListener("keydown", (event) =>
     {
         if (event.keyCode == 32)
@@ -142,13 +145,9 @@ function initKeyEvents()
                         points -= 10;
                         continuePanel(1);
                     }
-                    eventAvailable.answer = false;
-                    eventAvailable.continue = true;
                     break;
                 case "k":
                     continuePanel(2);
-                    eventAvailable.answer = false;
-                    eventAvailable.continue = true;
                     break;
             }
         }
@@ -164,7 +163,7 @@ function startExperiment()
     let mainDiv = document.getElementById("main-container");
     let intro = document.createElement("h1");
     intro.id = "intro";
-    intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <space> za nastavak";
+    intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <SPACE> za nastavak";
     mainDiv.appendChild(intro);
 
 }
@@ -265,10 +264,10 @@ function drawStimulus(stimulus)
     let context = canvas.getContext("2d");
     for (let row of stimulus)
     {
-        for (let obj of row)
+        for (let rectInfo of row)
         {
-            context.fillStyle = obj.color;
-            context.fillRect(obj.x, obj.y, obj.size, obj.size);
+            context.fillStyle = rectInfo.color;
+            context.fillRect(rectInfo.x, rectInfo.y, rectInfo.size, rectInfo.size);
         }
     }
 
@@ -290,6 +289,7 @@ function nextStimulus()
     }
 
     createStimulus();
+    setTimeout(continuePanel, 3000, 2);
 
 }
 
@@ -300,10 +300,15 @@ function continuePanel(answeredCorrectly)
     // parameter answeredCorrectly expects a number between 0 and 2
     // 0 -> correct, 1 -> incorrect, 2 -> nothing
     
+    // if the user answers on time, the setTimeout function called will be disabled
+    if (eventAvailable.continue == true)
+        return;
+
+    // safety measures
     if (answeredCorrectly < 0)
         answeredCorrectly = 0;
     else if (answeredCorrectly > 2)
-        answeredCorrectly = 2;
+        answeredCorrectly = 2; 
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -319,12 +324,17 @@ function continuePanel(answeredCorrectly)
         case 1:
             feedback.innerText = "Izgubili ste $10";
             break;
-        default:
+        case 2:
             feedback.innerText = "Bez dobitka i gubitka";
+            break;
+        default:
+            feedback.innerText = "...";
             break;
     }
 
     mainDiv.appendChild(feedback);
+    eventAvailable.answer = false;
+    eventAvailable.continue = true;
 
 }
 
