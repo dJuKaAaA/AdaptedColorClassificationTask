@@ -78,41 +78,101 @@ odds.set("46", 30);
 //the percentage is removed from the array
 let oddsLeft = [54, 52, 50, 48, 46];
 
+// percentage of the positive color of the current stimulus
+let currentPercentage;
+
 // contains the positive color and the negative color
 let colors = new Colors();
 
 // amount of points scored
 let points = 0;
 
+// used for determining when to use certain key presses 
+let eventAvailable = {
+    intro: true,
+    answer: false,
+    continue: false
+}
+
 //----------------------------------------------------------------------------
 
 
 function main()
 {
-    introduction();
-    runExperiment();
+    initKeyEvents();
+    startExperiment();
 }
 
-function introduction()
+function initKeyEvents()
 {
-    // places the introduction to the experiment on the screen
-    // !!! not the final solution !!!
-
-    let mainDiv = document.getElementById("main-container");
-    let intro = document.createElement("h1");
-    intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <space> za nastavak";
-    mainDiv.appendChild(intro);
-
     document.addEventListener("keydown", (event) =>
     {
         if (event.keyCode == 32)
         {
-            document.documentElement.requestFullscreen();
-            mainDiv.removeChild(intro)
-            createCanvas()
+            let mainDiv = document.getElementById("main-container");
+            if (eventAvailable.intro)
+            {
+                document.documentElement.requestFullscreen();
+                mainDiv.removeChild(document.getElementById("intro"));
+                createCanvas();
+                nextStimulus();
+                eventAvailable.intro = false;
+                eventAvailable.answer = true;
+            }
+            if (eventAvailable.continue)
+            {
+                mainDiv.removeChild(document.getElementById("feedback"));
+                nextStimulus();
+                eventAvailable.continue = false;
+                eventAvailable.answer = true;
+            }
+        }
+        if (eventAvailable.answer)
+        {
+            switch (event.key)
+            {
+                case "a":
+                    if (currentPercentage > 50)
+                    {
+                        points += 10;
+                        continuePanel(0);
+                    }
+                    else if (currentPercentage < 50)
+                    {
+                        points -= 10;
+                        continuePanel(1);
+                    }
+                    eventAvailable.answer = false;
+                    eventAvailable.continue = true;
+                    break;
+                case "k":
+                    continuePanel(2);
+                    eventAvailable.answer = false;
+                    eventAvailable.continue = true;
+                    break;
+            }
         }
     });
+}
 
+function startExperiment()
+{
+    // starts the experiment
+    // also places the introduction to the experiment on the screen
+    // !!! not the final solution !!!
+
+    let mainDiv = document.getElementById("main-container");
+    let intro = document.createElement("h1");
+    intro.id = "intro";
+    intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <space> za nastavak";
+    mainDiv.appendChild(intro);
+
+}
+
+function removeAllEventListeners()
+{
+    let mainDiv = document.getElementById("main-container");
+    mainDiv.replaceWith(mainDiv.cloneNode(true));
 }
 
 function createCanvas() 
@@ -134,21 +194,20 @@ function clearCanvas()
 {
     // clears the canvas for redrawing
 
-    let canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-
+    let canvas = document.getElementById("main-canvas");
+    let context = canvas.getContext("2d");
+    
     context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function createStimulus(colors, percentage)
+function createStimulus()
 {
     // creates a stimulus and collects information from stimulus
     
-    let canvas = document.getElementById("main-canvas");
     let stimulusSize = 200;
     let pixelSize = 2;
-    let positivePixelsLeft = percentage / 100 * pixelSize * stimulusSize;
-    let negativePixelsLeft = (1 - percentage / 100) * pixelSize * stimulusSize; 
+    let positivePixelsLeft = currentPercentage / 100 * pixelSize * stimulusSize;
+    let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * stimulusSize; 
     let stimulus = [];
 
     for (let i = 0; i < stimulusSize; ++i)
@@ -215,40 +274,71 @@ function drawStimulus(stimulus)
 
 }
 
-function runExperiment()
-{
-    // runs the experiment
-
-    document.addEventListener("keydown", (event) =>
-    {
-        if (event.keyCode == 32)
-        {
-            if (oddsLeft.length > 0)
-                nextStimulus();
-            else
-                console.log("Finished experiment");
-        }
-    });
-
-    nextStimulus();
-}
-
 function nextStimulus()
 {
-    // generates the next stimulus
+    // generates the next stimulus and checks the users anwser
 
     let ranIndex = Math.floor(Math.random() * oddsLeft.length);
-    let percentage = oddsLeft[ranIndex];
+    currentPercentage = oddsLeft[ranIndex];
 
-    let left = odds.get(percentage.toString());
-    odds.set(percentage.toString(), --left);
+    let left = odds.get(currentPercentage.toString());
+    odds.set(currentPercentage.toString(), --left);
 
-    if (odds.get(percentage.toString()) == 0)
+    if (odds.get(currentPercentage.toString()) == 0)
     {
         oddsLeft.splice(ranIndex, 1);
     }
 
-    createStimulus(colors, percentage);
+    createStimulus();
+
+}
+
+function continuePanel(answeredCorrectly)
+{
+    // displays the panel that contains information about how the user did the previous
+    // stimulus and waits for the user's input to proceed with the experiment
+    // parameter answeredCorrectly expects a number between 0 and 2
+    // 0 -> correct, 1 -> incorrect, 2 -> nothing
+    
+    if (answeredCorrectly < 0)
+        answeredCorrectly = 0;
+    else if (answeredCorrectly > 2)
+        answeredCorrectly = 2;
+
+    let mainDiv = document.getElementById("main-container");
+    clearCanvas();
+    drawCross();
+
+    let feedback = document.createElement("h3");
+    feedback.id = "feedback";
+    switch (answeredCorrectly)
+    {
+        case 0:
+            feedback.innerText = "Dobili ste $10";
+            break;
+        case 1:
+            feedback.innerText = "Izgubili ste $10";
+            break;
+        default:
+            feedback.innerText = "Bez dobitka i gubitka";
+            break;
+    }
+
+    mainDiv.appendChild(feedback);
+
+}
+
+function drawCross()
+{
+    let canvas = document.getElementById("main-canvas");
+    let context = canvas.getContext("2d")
+
+    context.fillStyle = "rgb(0, 0, 0)";
+    context.fillRect(340, 240, 120, 120);
+    context.clearRect(340, 240, 40, 40);
+    context.clearRect(420, 240, 40, 40);
+    context.clearRect(340, 320, 40, 40);
+    context.clearRect(420, 320, 40, 40);
 
 }
 
