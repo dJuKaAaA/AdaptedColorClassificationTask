@@ -1,151 +1,5 @@
 // Danilo magistarski eksperiment
 
-function main()
-{
-    createCanvas();
-    // runExperiment();
-    
-    let colors = new Colors();
-    createStimulus(colors, 54);
-
-}
-
-function createCanvas() 
-{
-    // the system creates the canvas tag and places it inside the body of the html file
-    
-    let canvasContainer = document.getElementById("canvas-container");
-    canvasContainer.style.textAlign = "center";
-
-    let canvas = document.createElement("canvas");
-    let canvasSizeOffset = 1.25;
-    canvas.width = window.screen.width / canvasSizeOffset;
-    canvas.height = window.screen.height / canvasSizeOffset;
-    canvas.style.backgroundColor = "rgb(255, 255, 255)";
-    canvas.id = "main-canvas";
-
-    canvasContainer.appendChild(canvas);
-}
-
-function clearCanvas()
-{
-    // clears the canvas for redrawing
-
-    let canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function createStimulus(colors, percentage)
-{
-    // creates a stimulus and collects information from stimulus
-    let stimulusSize = 200;
-    let pixelSize = 2;
-    let positivePixelsLeft = percentage / 100 * pixelSize * stimulusSize;
-    let negativePixelsLeft = (1 - percentage / 100) * pixelSize * stimulusSize; 
-    let stimulus = [];
-
-    for (let i = 0; i < stimulusSize; ++i)
-    {
-        let row = [];
-        let x = i * pixelSize;
-        for (let j = 0; j < stimulusSize; ++j)
-        {
-            let y = j * pixelSize;
-            let ranNum = Math.random();
-            if (ranNum > 0.5)
-            {
-                if (positivePixelsLeft > 0)
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
-                    --positivePixelsLeft;
-                }
-                else 
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
-                    --negativePixelsLeft;
-                }
-            }
-            else
-            {
-                if (negativePixelsLeft > 0)
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
-                    --negativePixelsLeft;
-                }
-                else 
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
-                    --positivePixelsLeft;
-                }
-            }
-        }
-        stimulus.push(row);
-    }
-
-    drawStimulus(stimulus)
-
-}
-
-function drawStimulus(stimulus)
-{
-    // uses the parameter "stimulus" which is a 2D array which contains objects with
-    // necessary information to draw the stimulus on the canvas 
-    // it contains js objects with attributes: x (for x position), y (for y position),
-    // size (represents pixel size) and color (positive or negative color)
-
-    let canvas = document.getElementById("main-canvas");
-    let context = canvas.getContext("2d");
-    for (let row of stimulus)
-    {
-        for (let obj of row)
-        {
-            context.fillStyle = obj.color;
-            context.fillRect(obj.x, obj.y, obj.size, obj.size);
-        }
-    }
-
-}
-
-function runExperiment()
-{
-    // runs the experiment
-
-    // odds is a map with the percentage of the positive color 
-    // and the value of the amount of stimuli left to create
-    let odds = new Map();
-    odds.set("54", 30);
-    odds.set("52", 30);
-    odds.set("50", 30);
-    odds.set("48", 30);
-    odds.set("46", 30);
-
-    // oddsLeft is used to get a random stimuli 
-    // when the number of stimuli with a certain percentage reaches 30, 
-    //the percentage is removed from the array
-    oddsLeft = [54, 52, 50, 48, 46];
-
-    let colors = new Colors();
-    while (oddsLeft.length > 0)
-    {
-
-        let ranIndex = Math.floor(Math.random() * oddsLeft.length);
-        let percentage = oddsLeft[ranIndex];
-
-        let left = odds.get(percentage.toString());
-        odds.set(percentage.toString(), --left);
-
-        if (odds.get(percentage.toString()) == 0)
-        {
-            oddsLeft.splice(ranIndex, 1);
-        }
-
-        createStimulus(colors, percentage);
-    }
-
-}
-
 // colors class for generating the positive and negative colors
 class Colors 
 {
@@ -206,5 +60,180 @@ class Colors
 
     }
 }
+
+// global variables:
+//----------------------------------------------------------------------------
+
+// odds is a map with the percentage of the positive color 
+// and the value of the amount of stimuli left to create
+let odds = new Map();
+odds.set("54", 30);
+odds.set("52", 30);
+odds.set("50", 30);
+odds.set("48", 30);
+odds.set("46", 30);
+
+// oddsLeft is used to get a random stimuli 
+// when the number of stimuli with a certain percentage reaches 30, 
+//the percentage is removed from the array
+let oddsLeft = [54, 52, 50, 48, 46];
+
+// contains the positive color and the negative color
+let colors = new Colors();
+
+//----------------------------------------------------------------------------
+
+
+function main()
+{
+    createCanvas();
+    runExperiment();
+}
+
+function introduction()
+{
+    // places the introduction to the experiment on the screen
+    // !!! not the final solution !!!
+
+
+
+}
+
+function createCanvas() 
+{
+    // the system creates the canvas tag and places it inside the body of the html file
+    
+    let canvasContainer = document.getElementById("main-container");
+    canvasContainer.style.textAlign = "center";
+
+    let canvas = document.createElement("canvas");
+    canvas.width = 800;
+    canvas.height = 600;
+    canvas.style.backgroundColor = "rgb(255, 255, 255)";
+    canvas.id = "main-canvas";
+
+    canvasContainer.appendChild(canvas);
+}
+
+function clearCanvas()
+{
+    // clears the canvas for redrawing
+
+    let canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function createStimulus(colors, percentage)
+{
+    // creates a stimulus and collects information from stimulus
+    
+    let canvas = document.getElementById("main-canvas");
+    let stimulusSize = 200;
+    let pixelSize = 2;
+    let positivePixelsLeft = percentage / 100 * pixelSize * stimulusSize;
+    let negativePixelsLeft = (1 - percentage / 100) * pixelSize * stimulusSize; 
+    let stimulus = [];
+
+    for (let i = 0; i < stimulusSize; ++i)
+    {
+        let row = [];
+        let x = i * pixelSize + 200;
+        for (let j = 0; j < stimulusSize; ++j)
+        {
+            let y = j * pixelSize + 20;
+            let ranNum = Math.random();
+            if (ranNum > 0.5)
+            {
+                if (positivePixelsLeft > 0)
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
+                    --positivePixelsLeft;
+                }
+                else 
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
+                    --negativePixelsLeft;
+                }
+            }
+            else
+            {
+                if (negativePixelsLeft > 0)
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
+                    --negativePixelsLeft;
+                }
+                else 
+                {
+                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
+                    --positivePixelsLeft;
+                }
+            }
+        }
+        stimulus.push(row);
+    }
+
+    drawStimulus(stimulus)
+
+}
+
+function drawStimulus(stimulus)
+{
+    // uses the parameter "stimulus" which is a 2D array which contains objects with
+    // necessary information for drawing the stimulus on the canvas 
+    // it contains js objects with attributes: x (for x position), y (for y position),
+    // size (represents pixel size) and color (positive or negative color)
+
+    let canvas = document.getElementById("main-canvas");
+    let context = canvas.getContext("2d");
+    for (let row of stimulus)
+    {
+        for (let obj of row)
+        {
+            context.fillStyle = obj.color;
+            context.fillRect(obj.x, obj.y, obj.size, obj.size);
+        }
+    }
+
+}
+
+function runExperiment()
+{
+    // runs the experiment
+
+    document.addEventListener("keydown", (event) =>
+    {
+        if (event.keyCode == 32)
+        {
+            if (oddsLeft.length > 0)
+                nextStimulus();
+            else
+                console.log("Finished experiment");
+        }
+    });
+
+    nextStimulus();
+}
+
+function nextStimulus()
+{
+    // generates the next stimulus
+
+    let ranIndex = Math.floor(Math.random() * oddsLeft.length);
+    let percentage = oddsLeft[ranIndex];
+
+    let left = odds.get(percentage.toString());
+    odds.set(percentage.toString(), --left);
+
+    if (odds.get(percentage.toString()) == 0)
+    {
+        oddsLeft.splice(ranIndex, 1);
+    }
+
+    createStimulus(colors, percentage);
+
+}
+
 
 main();
