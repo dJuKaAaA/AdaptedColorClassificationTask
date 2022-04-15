@@ -81,12 +81,15 @@ let oddsLeft = [54, 52, 50, 48, 46];
 // contains the positive color and the negative color
 let colors = new Colors();
 
+// amount of points scored
+let points = 0;
+
 //----------------------------------------------------------------------------
 
 
 function main()
 {
-    createCanvas();
+    introduction();
     runExperiment();
 }
 
@@ -95,7 +98,20 @@ function introduction()
     // places the introduction to the experiment on the screen
     // !!! not the final solution !!!
 
+    let mainDiv = document.getElementById("main-container");
+    let intro = document.createElement("h1");
+    intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <space> za nastavak";
+    mainDiv.appendChild(intro);
 
+    document.addEventListener("keydown", (event) =>
+    {
+        if (event.keyCode == 32)
+        {
+            document.documentElement.requestFullscreen();
+            mainDiv.removeChild(intro)
+            createCanvas()
+        }
+    });
 
 }
 
@@ -103,8 +119,7 @@ function createCanvas()
 {
     // the system creates the canvas tag and places it inside the body of the html file
     
-    let canvasContainer = document.getElementById("main-container");
-    canvasContainer.style.textAlign = "center";
+    let mainDiv = document.getElementById("main-container");
 
     let canvas = document.createElement("canvas");
     canvas.width = 800;
@@ -112,7 +127,7 @@ function createCanvas()
     canvas.style.backgroundColor = "rgb(255, 255, 255)";
     canvas.id = "main-canvas";
 
-    canvasContainer.appendChild(canvas);
+    mainDiv.appendChild(canvas);
 }
 
 function clearCanvas()
@@ -184,6 +199,8 @@ function drawStimulus(stimulus)
     // necessary information for drawing the stimulus on the canvas 
     // it contains js objects with attributes: x (for x position), y (for y position),
     // size (represents pixel size) and color (positive or negative color)
+
+    clearCanvas();
 
     let canvas = document.getElementById("main-canvas");
     let context = canvas.getContext("2d");
