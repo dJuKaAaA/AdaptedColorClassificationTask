@@ -94,6 +94,14 @@ let eventAvailable = {
     continue: false
 }
 
+// used for detirmining how long it took the user to answer
+let startTime;
+let endTime;
+
+// experiment information based on user's answers
+let expInfo = [[]]
+
+
 //----------------------------------------------------------------------------
 
 
@@ -290,6 +298,7 @@ function nextStimulus()
 
     createStimulus();
     setTimeout(continuePanel, 3000, 2);
+    startTime = Date.now();
 
 }
 
@@ -303,6 +312,10 @@ function continuePanel(answeredCorrectly)
     // if the user answers on time, the setTimeout function called will be disabled
     if (eventAvailable.continue == true)
         return;
+
+    endTime = Date.now();
+    let timeTook = endTime - startTime;
+    console.log(timeTook);
 
     // safety measures
     if (answeredCorrectly < 0)
