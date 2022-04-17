@@ -68,8 +68,8 @@ class Colors
 // number of experiments per all proportions
 let expNum = 1;
 
-// serial number of stimulus
-let serialStimNum = 1;
+// serial number of trial
+let serialTrialNum = 1;
 
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
@@ -80,13 +80,13 @@ odds.set("50", expNum);
 odds.set("48", expNum);
 odds.set("46", expNum);
 
-// oddsLeft is used to get a random stimuli 
-// when the number of stimuli with a certain percentage reaches 30, 
+// oddsLeft is used to get a random trial 
+// when the number of trials with a certain percentage reaches 30, 
 // the percentage is removed from the array
 // the odds stored are the odds of the positive color
 let oddsLeft = [54, 52, 50, 48, 46];
 
-// percentage of the positive color of the current stimulus
+// percentage of the positive color of the current trial
 let currentPercentage;
 
 // contains the positive color and the negative color
@@ -158,7 +158,7 @@ function initKeyEvents()
                 mainDiv.removeChild(document.getElementById("positive-color"));
                 mainDiv.removeChild(document.getElementById("negative-color"));
                 createCanvas();
-                nextStimulus();
+                nextTrial();
             }
             if (eventAvailable.continue)
             {
@@ -167,7 +167,7 @@ function initKeyEvents()
                 {
                     if (window.innerHeight != screen.height)
                         document.documentElement.requestFullscreen();
-                    nextStimulus();
+                    nextTrial();
                 }
                 else 
                 {
@@ -321,21 +321,21 @@ function clearCanvas()
     context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function createStimulus()
+function createTrial()
 {
-    // creates a stimulus and collects information from stimulus
+    // creates a trial and collects information from it
     
-    let stimulusSize = 250;
+    let trialSize = 250;
     let pixelSize = 2;
-    let positivePixelsLeft = currentPercentage / 100 * pixelSize * stimulusSize;
-    let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * stimulusSize; 
-    let stimulus = [];
+    let positivePixelsLeft = currentPercentage / 100 * pixelSize * trialSize;
+    let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * trialSize; 
+    let trial = [];
 
-    for (let i = 0; i < stimulusSize; ++i)
+    for (let i = 0; i < trialSize; ++i)
     {
         let row = [];
         let x = i * pixelSize + 150;
-        for (let j = 0; j < stimulusSize; ++j)
+        for (let j = 0; j < trialSize; ++j)
         {
             let y = j * pixelSize + 25;
             let ranNum = Math.random();
@@ -366,17 +366,17 @@ function createStimulus()
                 }
             }
         }
-        stimulus.push(row);
+        trial.push(row);
     }
 
-    drawStimulus(stimulus)
+    drawTrial(trial)
 
 }
 
-function drawStimulus(stimulus)
+function drawTrial(trial)
 {
-    // uses the parameter "stimulus" which is a 2D array which contains objects with
-    // necessary information for drawing the stimulus on the canvas 
+    // uses the parameter "trial" which is a 2D array which contains objects with
+    // necessary information for drawing the trial on the canvas 
     // it contains js objects with attributes: x (for x position), y (for y position),
     // size (represents pixel size) and color (positive or negative color)
 
@@ -384,7 +384,7 @@ function drawStimulus(stimulus)
 
     let canvas = document.getElementById("main-canvas");
     let context = canvas.getContext("2d");
-    for (let row of stimulus)
+    for (let row of trial)
     {
         for (let rectInfo of row)
         {
@@ -395,23 +395,22 @@ function drawStimulus(stimulus)
 
 }
 
-function nextStimulus()
+function nextTrial()
 {
     // generates the next stimulus and checks the users anwser
 
-
-    // points and stims passed
+    // points scored and trials passed
     //------------------------------------------------------------
     let pointsScored = document.createElement("h2");
     pointsScored.id = "pts";
     pointsScored.innerText = "Imate " + points + " poena";
-    let stimsPassed = document.createElement("h3");
-    stimsPassed.id = "stims";
-    stimsPassed.innerText = "Stimulus: " + serialStimNum + "/" + (expNum * 5);
+    let trialsPassed = document.createElement("h3");
+    trialsPassed.id = "stims";
+    trialsPassed.innerText = "Stimulus: " + serialTrialNum + "/" + (expNum * 5);
 
     let mainDiv = document.getElementById("main-container");
     mainDiv.appendChild(pointsScored);
-    mainDiv.appendChild(stimsPassed);
+    mainDiv.appendChild(trialsPassed);
     //------------------------------------------------------------
 
     let ranIndex = Math.floor(Math.random() * oddsLeft.length);
@@ -428,7 +427,7 @@ function nextStimulus()
     eventAvailable.continue = false;
     eventAvailable.answer = true;
 
-    createStimulus();
+    createTrial();
     timeoutId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
 
@@ -480,7 +479,7 @@ function continuePanel(answeredCorrectly)
 
     mainDiv.removeChild(document.getElementById("pts"));
     mainDiv.removeChild(document.getElementById("stims"));
-    ++serialStimNum;
+    ++serialTrialNum;
 
     mainDiv.appendChild(feedback);
     eventAvailable.answer = false;
@@ -508,7 +507,7 @@ function drawCross()
 
 function collectInfoFromStim()
 {
-    // collects information generated by the user answers on the stimulus
+    // collects information generated by the user answers on the trial
     // headers: ["Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time", "Answer time", "Points"]
     
     // getting the name of the browser the user is using for the experiment
@@ -531,11 +530,11 @@ function collectInfoFromStim()
     
     let isInFullscreen = window.innerHeight == screen.height;
     let timeTook = endTime - startTime;
-    let stimAnswerInfo = [
+    let trialAnswerInfo = [
         currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook / 1000, Date(), points, browserName
     ];
 
-    expInfo.push(stimAnswerInfo);
+    expInfo.push(trialAnswerInfo);
 
 }
 
