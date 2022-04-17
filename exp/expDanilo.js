@@ -16,39 +16,40 @@ class Colors
         let b_neg = "";
         let ranNum = Math.floor(Math.random() * 3);
 
+        let colorRange = 50;
 
         // first random value is 255 (so that the color is high in contrast)
-        // the other to are randomly selected from 0 to 255
+        // the other to are randomly selected from 0 to colorRange
         // negative color is the value of 255 - positive_value
         switch (ranNum)
         {
             case 0:
                 r_pos = "255";
                 r_neg = "0";
-                ranNum = Math.floor(Math.random() * 255);
+                ranNum = Math.floor(Math.random() * colorRange);
                 g_pos = ranNum.toString();
                 g_neg = (255 - ranNum).toString();
-                ranNum = Math.floor(Math.random() * 255);
+                ranNum = Math.floor(Math.random() * colorRange);
                 b_pos = ranNum.toString();
                 b_neg = (255 - ranNum).toString();
                 break;
             case 1:
                 g_pos = "255";
                 g_neg = "0";
-                ranNum = Math.floor(Math.random() * 255);
+                ranNum = Math.floor(Math.random() * colorRange);
                 r_pos = ranNum.toString();
                 r_neg = (255 - ranNum).toString();
-                ranNum = Math.floor(Math.random() * 255);
+                ranNum = Math.floor(Math.random() * colorRange);
                 b_pos = ranNum.toString();
                 b_neg = (255 - ranNum).toString();
                 break;
             case 2:
                 b_pos = "255";
                 b_neg = "0";
-                ranNum = Math.floor(Math.random() * 255);
+                ranNum = Math.floor(Math.random() * colorRange);
                 g_pos = ranNum.toString();
                 g_neg = (255 - ranNum).toString();
-                ranNum = Math.floor(Math.random() * 255);
+                ranNum = Math.floor(Math.random() * colorRange);
                 r_pos = ranNum.toString();
                 r_neg = (255 - ranNum).toString();
                 break;
@@ -115,10 +116,12 @@ let timeoutId;
 let currentAnswer = "";
 
 // experiment information based on user's answers
-let expInfo = []
+let expInfo = [];
 
 // experiment table headers
-let expHeaders = ["Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time", "Answer time", "Points"]
+let expHeaders = [
+    "Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time in secs", "Answer date and time", "Total points at the time", "Browser"
+];
 
 
 //----------------------------------------------------------------------------
@@ -152,6 +155,8 @@ function initKeyEvents()
             {
                 document.documentElement.requestFullscreen();
                 mainDiv.removeChild(document.getElementById("intro"));
+                mainDiv.removeChild(document.getElementById("positive-color"));
+                mainDiv.removeChild(document.getElementById("negative-color"));
                 createCanvas();
                 nextStimulus();
             }
@@ -210,7 +215,33 @@ function startExperiment()
     let intro = document.createElement("h1");
     intro.id = "intro";
     intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <SPACE> za nastavak";
+    
     mainDiv.appendChild(intro);
+    
+    // positive and negative color explanation
+    //----------------------------------------------------------
+    let positiveDiv = document.createElement("div");
+    let negativeDiv = document.createElement("div");
+    positiveDiv.id = "positive-color";
+    negativeDiv.id = "negative-color";
+    positiveDiv.style.fontSize = "30px";
+    negativeDiv.style.fontSize = "30px";
+    positiveDiv.style.fontWeight = "bold";
+    negativeDiv.style.fontWeight = "bold";
+    positiveDiv.innerText = "Positive color";
+    negativeDiv.innerText = "Negative color";
+    positiveDiv.style.padding = "50px 0";
+    negativeDiv.style.padding = "50px 0";
+    positiveDiv.style.margin = "0 35%";
+    negativeDiv.style.margin = "0 35%";
+    positiveDiv.style.backgroundColor = colors.positive;
+    negativeDiv.style.backgroundColor = colors.negative;
+    positiveDiv.style.color = colors.negative;
+    negativeDiv.style.color = colors.positive;
+
+    mainDiv.appendChild(positiveDiv);
+    mainDiv.appendChild(negativeDiv);
+    //----------------------------------------------------------
 
 }
 
@@ -228,6 +259,8 @@ function finishExperiment()
     
     createDataTable();
     addDataToTable();
+
+    // sendDataToServer();
 
     document.exitFullscreen();
 
@@ -414,6 +447,8 @@ function continuePanel(answeredCorrectly)
     // if the user answered on time
     if (timeTook < 3000)
         clearTimeout(timeoutId);
+    else
+        currentAnswer = "N/A";
 
     // safety measures
     if (answeredCorrectly < 0)
@@ -475,11 +510,29 @@ function collectInfoFromStim()
 {
     // collects information generated by the user answers on the stimulus
     // headers: ["Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time", "Answer time", "Points"]
-
+    
+    // getting the name of the browser the user is using for the experiment
+    //-----------------------------------------------------------------------
+    let browserName = ((agent) => 
+    {        
+        switch (true) 
+        {
+            case agent.indexOf("edge") > -1: return "MS Edge";
+            case agent.indexOf("edg/") > -1: return "Edge (chromium based)";
+            case agent.indexOf("opr") > -1 && !!window.opr: return "Opera";
+            case agent.indexOf("chrome") > -1 && !!window.chrome: return "Chrome";
+            case agent.indexOf("trident") > -1: return "MS IE";
+            case agent.indexOf("firefox") > -1: return "Mozilla Firefox";
+            case agent.indexOf("safari") > -1: return "Safari";
+            default: return "other";
+        }
+    })(window.navigator.userAgent.toLowerCase());
+    //-----------------------------------------------------------------------
+    
     let isInFullscreen = window.innerHeight == screen.height;
     let timeTook = endTime - startTime;
     let stimAnswerInfo = [
-        currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook + "ms", Date(), points
+        currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook / 1000, Date(), points, browserName
     ];
 
     expInfo.push(stimAnswerInfo);
@@ -507,9 +560,40 @@ function addDataToTable()
 
 }
 
-function sendToServer() 
+function sendDataToServer() 
 {
+    let csvString = "";
 
+    // creating XMLhttpRequest object
+    let xhr;
+    if (window.XMLHttpRequest) 
+    { 
+        // Mozilla, Safari, ...
+         xhr = new XMLHttpRequest();
+    } 
+    else if (window.ActiveXObject) 
+    { 
+        // IE 8 and older
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+  
+    for (let row of expInfo)
+    {
+        csvString += row.join("|") + "\n";
+    }
+  
+    // Build the URL to connect to
+    let url = "save-userinfo.php";
+    // let url = "http://localhost/save-userinfo.php";
+  
+    // Open a connection to the server
+    xhr.open("POST", url, true);
+  
+    // declaring that the data being sent is in XML format
+    xhr.setRequestHeader("Content-Type", "text/plain");
+  
+    // Send the request
+    xhr.send(csvString);
 }
 
 main();
