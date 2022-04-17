@@ -67,6 +67,9 @@ class Colors
 // number of experiments per all proportions
 let expNum = 1;
 
+// serial number of stimulus
+let serialStimNum = 1;
+
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
 let odds = new Map();
@@ -220,7 +223,7 @@ function finishExperiment()
     mainDiv.removeChild(canvas);
     
     let endingMessage = document.createElement("h1");
-    endingMessage.innerText = "Eksperiment je zavrsen. Osvojili ste $" + points;
+    endingMessage.innerText = "Eksperiment je zavrsen -> Osvojili ste " + points + " poena";
     mainDiv.appendChild(endingMessage);
     
     createDataTable();
@@ -235,14 +238,16 @@ function createDataTable() {
 
     let expTable = document.createElement("table");
     expTable.id = "exp-table";
-    expTable.style.marginLeft = "25%";
-    expTable.style.width = "800px";
+    expTable.style.width = "100%";
+    expTable.style.border = "1px solid black";
     expTable.style.backgroundColor = "white";
+    expTable.style.textAlign = "left";
 
-    let headerRow = document.createElement("row");
+    let headerRow = document.createElement("tr");
     for (let header of expHeaders) {
         let h = document.createElement("th");
         h.innerText = header;
+        h.style.border = "1px solid black";
         headerRow.appendChild(h);
     }
     expTable.appendChild(headerRow);
@@ -361,6 +366,21 @@ function nextStimulus()
 {
     // generates the next stimulus and checks the users anwser
 
+
+    // points and stims passed
+    //------------------------------------------------------------
+    let pointsScored = document.createElement("h2");
+    pointsScored.id = "pts";
+    pointsScored.innerText = "Imate " + points + " poena";
+    let stimsPassed = document.createElement("h3");
+    stimsPassed.id = "stims";
+    stimsPassed.innerText = "Stimulus: " + serialStimNum + "/" + (expNum * 5);
+
+    let mainDiv = document.getElementById("main-container");
+    mainDiv.appendChild(pointsScored);
+    mainDiv.appendChild(stimsPassed);
+    //------------------------------------------------------------
+
     let ranIndex = Math.floor(Math.random() * oddsLeft.length);
     currentPercentage = oddsLeft[ranIndex];
 
@@ -423,6 +443,10 @@ function continuePanel(answeredCorrectly)
             break;
     }
 
+    mainDiv.removeChild(document.getElementById("pts"));
+    mainDiv.removeChild(document.getElementById("stims"));
+    ++serialStimNum;
+
     mainDiv.appendChild(feedback);
     eventAvailable.answer = false;
     eventAvailable.continue = true;
@@ -469,11 +493,12 @@ function addDataToTable()
     let dataTable = document.getElementById("exp-table");
     for (let row of expInfo)
     {
-        let expRow = document.createElement("row");
+        let expRow = document.createElement("tr");
         for (let el of row)
         {
             let tableEl = document.createElement("td");
             tableEl.innerText = el;
+            tableEl.style.border = "1px solid black";
             expRow.appendChild(tableEl);
         }
 
