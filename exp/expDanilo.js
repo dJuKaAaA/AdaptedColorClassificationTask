@@ -236,8 +236,8 @@ function startExperiment()
     negativeDiv.style.margin = "0 35%";
     positiveDiv.style.backgroundColor = colors.positive;
     negativeDiv.style.backgroundColor = colors.negative;
-    positiveDiv.style.color = colors.negative;
-    negativeDiv.style.color = colors.positive;
+    positiveDiv.style.color = "black";
+    negativeDiv.style.color = "black";
 
     mainDiv.appendChild(positiveDiv);
     mainDiv.appendChild(negativeDiv);
@@ -304,6 +304,7 @@ function createCanvas()
     let canvas = document.createElement("canvas");
     canvas.width = 800;
     canvas.height = 600;
+    canvas.style.marginTop = "5%";
     canvas.style.backgroundColor = "rgb(255, 255, 255)";
     canvas.id = "main-canvas";
     eventAvailable.intro = false;
@@ -401,10 +402,10 @@ function nextTrial()
 
     // points scored and trials passed
     //------------------------------------------------------------
-    let pointsScored = document.createElement("h2");
+    let pointsScored = document.createElement("h1");
     pointsScored.id = "pts";
     pointsScored.innerText = "Imate " + points + " poena";
-    let trialsPassed = document.createElement("h3");
+    let trialsPassed = document.createElement("h2");
     trialsPassed.id = "stims";
     trialsPassed.innerText = "Stimulus: " + serialTrialNum + "/" + (expNum * 5);
 
@@ -459,7 +460,7 @@ function continuePanel(answeredCorrectly)
     clearCanvas();
     drawCross();
 
-    let feedback = document.createElement("h3");
+    let feedback = document.createElement("h2");
     feedback.id = "feedback";
     switch (answeredCorrectly)
     {
@@ -497,11 +498,11 @@ function drawCross()
     let context = canvas.getContext("2d")
 
     context.fillStyle = "rgb(0, 0, 0)";
-    context.fillRect(340, 240, 120, 120);
-    context.clearRect(340, 240, 40, 40);
-    context.clearRect(420, 240, 40, 40);
-    context.clearRect(340, 320, 40, 40);
-    context.clearRect(420, 320, 40, 40);
+    context.fillRect(385, 285, 30, 30);
+    context.clearRect(385, 285, 10, 10);
+    context.clearRect(405, 285, 10, 10);
+    context.clearRect(385, 305, 10, 10);
+    context.clearRect(405, 305, 10, 10);
 
 }
 
@@ -513,7 +514,7 @@ function collectInfoFromStim()
     // getting the name of the browser the user is using for the experiment
     //-----------------------------------------------------------------------
     let browserName = ((agent) => 
-    {        
+    {
         switch (true) 
         {
             case agent.indexOf("edge") > -1: return "MS Edge";
@@ -529,7 +530,7 @@ function collectInfoFromStim()
     //-----------------------------------------------------------------------
     
     let isInFullscreen = window.innerHeight == screen.height;
-    let timeTook = parseFloat(((endTime - startTime) / 1000).toFixed(2));
+    let timeTook = endTime - startTime;
     let trialAnswerInfo = [
         currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook, Date(), points, browserName
     ];
@@ -568,10 +569,10 @@ function sendDataToServer()
     if (window.XMLHttpRequest) 
     { 
         // Mozilla, Safari, ...
-         xhr = new XMLHttpRequest();
+        xhr = new XMLHttpRequest();
     } 
     else if (window.ActiveXObject) 
-    { 
+    {
         // IE 8 and older
         xhr = new ActiveXObject("Microsoft.XMLHTTP");
     }
