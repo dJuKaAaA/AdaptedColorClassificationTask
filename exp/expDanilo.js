@@ -529,9 +529,9 @@ function collectInfoFromStim()
     //-----------------------------------------------------------------------
     
     let isInFullscreen = window.innerHeight == screen.height;
-    let timeTook = endTime - startTime;
+    let timeTook = parseFloat(((endTime - startTime) / 1000).toFixed(2));
     let trialAnswerInfo = [
-        currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook / 1000, Date(), points, browserName
+        currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook, Date(), points, browserName
     ];
 
     expInfo.push(trialAnswerInfo);
