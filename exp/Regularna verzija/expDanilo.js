@@ -109,8 +109,8 @@ let isKeyDown = false;
 let startTime;
 let endTime;
 
-// variable used for stopping the setTimeout function from executing when the user answer in time
-let timeoutId;
+// variable used for stopping the setTimeout function from executing when the user answers on time
+let answerTimeId;
 
 // stores the answer to the stimulus
 let currentAnswer = "";
@@ -429,7 +429,7 @@ function nextTrial()
     eventAvailable.answer = true;
 
     createTrial();
-    timeoutId = setTimeout(continuePanel, 3000, 2);
+    answerTimeId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
 
 }
@@ -446,7 +446,7 @@ function continuePanel(answeredCorrectly)
 
     // if the user answered on time
     if (timeTook < 3000)
-        clearTimeout(timeoutId);
+        clearTimeout(answerTimeId);
     else
         currentAnswer = "N/A";
 
@@ -460,15 +460,15 @@ function continuePanel(answeredCorrectly)
     clearCanvas();
     drawCross();
 
-    let feedback = document.createElement("h2");
+    let feedback = document.createElement("h1");
     feedback.id = "feedback";
     switch (answeredCorrectly)
     {
         case 0:
-            feedback.innerText = "Dobili ste $10";
+            feedback.innerText = "Dobili ste 10 poena";
             break;
         case 1:
-            feedback.innerText = "Izgubili ste $10";
+            feedback.innerText = "Izgubili ste 10 poena";
             break;
         case 2:
             feedback.innerText = "Bez dobitka i gubitka";
