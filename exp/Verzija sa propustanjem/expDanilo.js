@@ -66,7 +66,7 @@ class Colors
 //----------------------------------------------------------------------------
 
 // number of experiments per all proportions
-let expNum = 1;
+let expNum = 30;
 
 // serial number of trial
 let serialTrialNum = 1;
@@ -154,9 +154,9 @@ function initKeyEvents()
             if (eventAvailable.intro)
             {
                 document.documentElement.requestFullscreen();
-                mainDiv.removeChild(document.getElementById("intro"));
-                mainDiv.removeChild(document.getElementById("positive-color"));
-                mainDiv.removeChild(document.getElementById("negative-color"));
+                mainDiv.removeChild(document.getElementById("instruction-img"));
+                mainDiv.removeChild(document.getElementById("color-instructions"));
+                mainDiv.removeChild(document.getElementById("proceed-experiment"));
                 createCanvas();
                 nextTrial();
             }
@@ -212,36 +212,46 @@ function startExperiment()
     // !!! not the final solution !!!
 
     let mainDiv = document.getElementById("main-container");
-    let intro = document.createElement("h1");
-    intro.id = "intro";
-    intro.innerText = "Dobro dosli na eksperiment. Ova poruka je postavljena radi testiranja i nece predstavljati finalni proizvod. <SPACE> za nastavak";
-    
-    mainDiv.appendChild(intro);
-    
+
+    let instructionImg = document.createElement("img");
+    instructionImg.id = "instruction-img";
+    instructionImg.src = "../Upustva/Propustanje/uputstvo-opcija-propustanja.jpg";
+    instructionImg.style.width = "50%";
+    instructionImg.style.height = "50%";
+    instructionImg.alt = "Slika sa intstrukcijama";
+    mainDiv.appendChild(instructionImg);
+
     // positive and negative color explanation
     //----------------------------------------------------------
+    let colorInstructionDiv = document.createElement("div");
+    colorInstructionDiv.id = "color-instructions";
     let positiveDiv = document.createElement("div");
     let negativeDiv = document.createElement("div");
-    positiveDiv.id = "positive-color";
-    negativeDiv.id = "negative-color";
-    positiveDiv.style.fontSize = "30px";
-    negativeDiv.style.fontSize = "30px";
+    positiveDiv.style.display = "inline-block";
+    negativeDiv.style.display = "inline-block";
+    positiveDiv.style.fontSize = "25px";
+    negativeDiv.style.fontSize = "25px";
     positiveDiv.style.fontWeight = "bold";
     negativeDiv.style.fontWeight = "bold";
-    positiveDiv.innerText = "Positive color";
-    negativeDiv.innerText = "Negative color";
-    positiveDiv.style.padding = "50px 0";
-    negativeDiv.style.padding = "50px 0";
-    positiveDiv.style.margin = "0 35%";
-    negativeDiv.style.margin = "0 35%";
+    positiveDiv.innerText = "\"Pozitivna\" boja";
+    negativeDiv.innerText = "\"Negativna\" boja";
+    positiveDiv.style.padding = "30px 20px";
+    negativeDiv.style.padding = "30px 20px";
     positiveDiv.style.backgroundColor = colors.positive;
     negativeDiv.style.backgroundColor = colors.negative;
     positiveDiv.style.color = "black";
     negativeDiv.style.color = "black";
 
-    mainDiv.appendChild(positiveDiv);
-    mainDiv.appendChild(negativeDiv);
+    colorInstructionDiv.appendChild(positiveDiv);
+    colorInstructionDiv.appendChild(negativeDiv);
+
+    mainDiv.appendChild(colorInstructionDiv);
     //----------------------------------------------------------
+
+    let proceedToExperimentText = document.createElement("h2");
+    proceedToExperimentText.id = "proceed-experiment";
+    proceedToExperimentText.innerText = "Pritisnite <SPACE> da biste počeli eksperiment";
+    mainDiv.appendChild(proceedToExperimentText);
 
 }
 
