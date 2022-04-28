@@ -123,9 +123,7 @@ let expHeaders = [
     "Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time in secs", "Answer date and time", "Total points at the time", "Browser"
 ];
 
-
 //----------------------------------------------------------------------------
-
 
 function main()
 {
@@ -487,6 +485,7 @@ function continuePanel(answeredCorrectly)
             feedback.innerText = "...";
             break;
     }
+    feedback.innerText += ", <SPACE> za nastavak";
 
     mainDiv.removeChild(document.getElementById("pts"));
     mainDiv.removeChild(document.getElementById("stims"));

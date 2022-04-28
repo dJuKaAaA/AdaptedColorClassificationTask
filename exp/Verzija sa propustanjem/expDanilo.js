@@ -123,9 +123,7 @@ let expHeaders = [
     "Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time in secs", "Answer date and time", "Total points at the time", "Browser"
 ];
 
-
 //----------------------------------------------------------------------------
-
 
 function main()
 {
@@ -439,7 +437,7 @@ function nextTrial()
     eventAvailable.answer = true;
 
     createTrial();
-    answerTimeId = setTimeout(continuePanel, 3000, 3);
+    answerTimeId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
 
 }
@@ -481,9 +479,6 @@ function continuePanel(answeredCorrectly)
             feedback.innerText = "Izgubili ste 10 poena";
             break;
         case 2:
-            feedback.innerText = "Bez dobitka i gubitka";
-            break;
-        case 3:
             if (currentPercentage > 50)
             {
                 feedback.innerText = "Dobili ste 5 poena";
@@ -501,6 +496,7 @@ function continuePanel(answeredCorrectly)
             feedback.innerText = "...";
             break;
     }
+    feedback.innerText += ", <SPACE> za nastavak";
 
     mainDiv.removeChild(document.getElementById("pts"));
     mainDiv.removeChild(document.getElementById("stims"));
