@@ -210,9 +210,9 @@ function startExperiment()
 
     let instructionImg = document.createElement("img");
     instructionImg.id = "instruction-img";
-    instructionImg.src = "../Upustva/Regularna/uputstvo-regularno.jpg";
-    instructionImg.style.width = "50%";
-    instructionImg.style.height = "50%";
+    instructionImg.src = "../Upustva/Kontrol/kontrol.png";
+    instructionImg.style.width = "45%";
+    instructionImg.style.height = "45%";
     instructionImg.alt = "Slika sa intstrukcijama";
     mainDiv.appendChild(instructionImg);
 
@@ -240,8 +240,8 @@ function createColorInstructions(mainDiv) {
     negativeDiv.style.fontWeight = "bold";
     positiveDiv.innerText = "\"Pozitivna\" boja <A>";
     negativeDiv.innerText = "\"Negativna\" boja <K>";
-    positiveDiv.style.padding = "30px 20px";
-    negativeDiv.style.padding = "30px 20px";
+    positiveDiv.style.padding = "15px 20px";
+    negativeDiv.style.padding = "15px 20px";
     positiveDiv.style.backgroundColor = colors.positive;
     negativeDiv.style.backgroundColor = colors.negative;
     positiveDiv.style.color = "black";
@@ -480,7 +480,7 @@ function continuePanel(answeredCorrectly)
             break;
     }
     balance.innerText = "Balans: " + points + " poena";
-    proceedMessage.innerText = "Pritisnite SPACE za nastavak";
+    proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
 
     mainDiv.appendChild(feedback);
     eventAvailable.answer = false;
