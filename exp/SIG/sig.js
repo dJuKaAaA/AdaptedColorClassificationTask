@@ -68,9 +68,6 @@ class Colors
 // number of experiments per all proportions
 let expNum = 30;
 
-// serial number of trial
-let serialTrialNum = 1;
-
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
 let odds = new Map();
@@ -213,14 +210,24 @@ function startExperiment()
 
     let instructionImg = document.createElement("img");
     instructionImg.id = "instruction-img";
-    instructionImg.src = "../Upustva/Propustanje/uputstvo-opcija-propustanja.jpg";
+    instructionImg.src = "../Upustva/Regularna/uputstvo-regularno.jpg";
     instructionImg.style.width = "50%";
     instructionImg.style.height = "50%";
     instructionImg.alt = "Slika sa intstrukcijama";
     mainDiv.appendChild(instructionImg);
 
+    createColorInstructions(mainDiv);
+    
+    let proceedToExperimentText = document.createElement("h2");
+    proceedToExperimentText.id = "proceed-experiment";
+    proceedToExperimentText.innerText = "Pritisnite <SPACE> da biste počeli eksperiment";
+    mainDiv.appendChild(proceedToExperimentText);
+
+}
+
+function createColorInstructions(mainDiv) {
     // positive and negative color explanation
-    //----------------------------------------------------------
+
     let colorInstructionDiv = document.createElement("div");
     colorInstructionDiv.id = "color-instructions";
     let positiveDiv = document.createElement("div");
@@ -231,8 +238,8 @@ function startExperiment()
     negativeDiv.style.fontSize = "25px";
     positiveDiv.style.fontWeight = "bold";
     negativeDiv.style.fontWeight = "bold";
-    positiveDiv.innerText = "\"Pozitivna\" boja";
-    negativeDiv.innerText = "\"Negativna\" boja";
+    positiveDiv.innerText = "\"Pozitivna\" boja <A>";
+    negativeDiv.innerText = "\"Negativna\" boja <K>";
     positiveDiv.style.padding = "30px 20px";
     negativeDiv.style.padding = "30px 20px";
     positiveDiv.style.backgroundColor = colors.positive;
@@ -244,13 +251,6 @@ function startExperiment()
     colorInstructionDiv.appendChild(negativeDiv);
 
     mainDiv.appendChild(colorInstructionDiv);
-    //----------------------------------------------------------
-
-    let proceedToExperimentText = document.createElement("h2");
-    proceedToExperimentText.id = "proceed-experiment";
-    proceedToExperimentText.innerText = "Pritisnite <SPACE> da biste počeli eksperiment";
-    mainDiv.appendChild(proceedToExperimentText);
-
 }
 
 function finishExperiment()
@@ -346,7 +346,7 @@ function createTrial()
         let x = i * pixelSize + 150;
         for (let j = 0; j < trialSize; ++j)
         {
-            let y = j * pixelSize + 25;
+            let y = j * pixelSize + 50;
             let ranNum = Math.random();
             if (ranNum > 0.5)
             {
@@ -408,20 +408,6 @@ function nextTrial()
 {
     // generates the next stimulus and checks the users anwser
 
-    // points scored and trials passed
-    //------------------------------------------------------------
-    let pointsScored = document.createElement("h1");
-    pointsScored.id = "pts";
-    pointsScored.innerText = "Imate " + points + " poena";
-    let trialsPassed = document.createElement("h2");
-    trialsPassed.id = "stims";
-    trialsPassed.innerText = "Stimulus: " + serialTrialNum + "/" + (expNum * 5);
-
-    let mainDiv = document.getElementById("main-container");
-    mainDiv.appendChild(pointsScored);
-    mainDiv.appendChild(trialsPassed);
-    //------------------------------------------------------------
-
     let ranIndex = Math.floor(Math.random() * oddsLeft.length);
     currentPercentage = oddsLeft[ranIndex];
 
@@ -457,7 +443,7 @@ function continuePanel(answeredCorrectly)
         clearTimeout(answerTimeId);
     else
         currentAnswer = "N/A";
-        
+
     // safety measures
     if (answeredCorrectly < 0)
         answeredCorrectly = 0;
@@ -468,39 +454,44 @@ function continuePanel(answeredCorrectly)
     clearCanvas();
     drawCross();
 
-    let feedback = document.createElement("h1");
+    let feedback = document.createElement("div");
     feedback.id = "feedback";
+
+    let pointsAddedLost = document.createElement("h1");
+    let balance = document.createElement("h2");
+    let proceedMessage = document.createElement("h2");
+    feedback.appendChild(pointsAddedLost);
+    feedback.appendChild(balance);
+    feedback.appendChild(proceedMessage);
+
     switch (answeredCorrectly)
     {
         case 0:
-            feedback.innerText = "Dobili ste 10 poena";
+            pointsAddedLost.innerText = "+10 poena";
             break;
         case 1:
-            feedback.innerText = "Izgubili ste 10 poena";
+            pointsAddedLost.innerText = "-10 poena";
             break;
         case 2:
             if (currentPercentage > 50)
             {
-                feedback.innerText = "Dobili ste 5 poena";
-                points += 5;
+                pointsAddedLost.innerText = "+5";
             }
             else if (currentPercentage < 50)
             {
-                feedback.innerText = "Izgubili ste 5 poena";
-                points -= 5;
+                pointsAddedLost.innerText = "-5";
             }
             else
-                feedback.innerText = "Bez dobitka i gubitka";
+            {
+                pointsAddedLost.innerText = "+0";
+            }
             break;
         default:
-            feedback.innerText = "...";
+            pointsAddedLost.innerText = "...";
             break;
     }
-    feedback.innerText += ", <SPACE> za nastavak";
-
-    mainDiv.removeChild(document.getElementById("pts"));
-    mainDiv.removeChild(document.getElementById("stims"));
-    ++serialTrialNum;
+    balance.innerText = "Balans: " + points + " poena";
+    proceedMessage.innerText = "Pritisnite SPACE za nastavak";
 
     mainDiv.appendChild(feedback);
     eventAvailable.answer = false;
