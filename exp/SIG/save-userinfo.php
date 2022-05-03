@@ -9,7 +9,7 @@ $filenameArray = str_getcsv($header, ",");
 $filename = "exp_sig.csv";
 //echo $filename;
 // $pathname = "../../../SecureData/HWH8/";
-$pathname = "../Podaci/";
+$pathname = "../Podaci/SIG/";
  $fullname = $pathname . $filename;
  //echo $fullname;
 //open a file handler with read and write permission

@@ -3,10 +3,13 @@
 $trialData = file_get_contents('php://input');
 //$trialData = '0001587703477798,0640,0,0.5,false,true,124.00,117.00,114.00,';
 // Strip out the header region of the line which determines filename
-$filename = "exp_demographics.csv";
+$header = substr($trialData,0,50);
+//echo $header;
+$filenameArray = str_getcsv($header, ",");
+$filename = "exp_kontrol.csv";
 //echo $filename;
-//$pathname = "../../../SecureData/HWH8/";
-$pathname = "../Podaci/";
+// $pathname = "../../../SecureData/HWH8/";
+$pathname = "../Podaci/KON/";
  $fullname = $pathname . $filename;
  //echo $fullname;
 //open a file handler with read and write permission
