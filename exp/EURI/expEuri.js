@@ -73,7 +73,7 @@ var results = regex.exec(location.search);
 let uniqueID = results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 
 // number of experiments per all proportions
-let expNum = 1;
+let expNum = 30;
 
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
