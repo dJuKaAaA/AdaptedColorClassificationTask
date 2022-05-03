@@ -4,3 +4,8 @@ ID,Answer,Positive color percentage,Negative color percentage,Is fullscreen,Reac
 0001651605673735,A,46,54,true,175,Tue May 03 2022 21:21:29 GMT+0200 (Central European Summer Time),10,Mozilla Firefox
 0001651605673735,A,48,52,true,176,Tue May 03 2022 21:21:29 GMT+0200 (Central European Summer Time),0,Mozilla Firefox
 0001651605673735,A,50,50,true,178,Tue May 03 2022 21:21:29 GMT+0200 (Central European Summer Time),0,Mozilla Firefox
+0001651606567600,A,50,50,true,470,Tue May 03 2022 21:36:41 GMT+0200 (Central European Summer Time),0,Mozilla Firefox
+0001651606567600,A,46,54,true,400,Tue May 03 2022 21:36:42 GMT+0200 (Central European Summer Time),-10,Mozilla Firefox
+0001651606567600,A,48,52,true,98,Tue May 03 2022 21:36:42 GMT+0200 (Central European Summer Time),-20,Mozilla Firefox
+0001651606567600,A,54,46,true,80,Tue May 03 2022 21:36:43 GMT+0200 (Central European Summer Time),-10,Mozilla Firefox
+0001651606567600,A,52,48,true,111,Tue May 03 2022 21:36:43 GMT+0200 (Central European Summer Time),0,Mozilla Firefox
