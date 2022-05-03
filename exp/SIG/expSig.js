@@ -65,8 +65,15 @@ class Colors
 // global variables:
 //----------------------------------------------------------------------------
 
+// identificator of the user
+let name = "ID";
+name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+var results = regex.exec(location.search);
+let uniqueID = results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+
 // number of experiments per all proportions
-let expNum = 30;
+let expNum = 1;
 
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
@@ -117,7 +124,7 @@ let expInfo = [];
 
 // experiment table headers
 let expHeaders = [
-    "Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time in secs", "Answer date and time", "Total points at the time", "Browser"
+    "ID", "Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time in secs", "Answer date and time", "Total points at the time", "Browser"
 ];
 
 //----------------------------------------------------------------------------
@@ -259,24 +266,32 @@ function finishExperiment()
     let canvas = document.getElementById("main-canvas");
     mainDiv.removeChild(canvas);
     
-    let endingMessage = document.createElement("h1");
-    endingMessage.innerText = "Eksperiment je zavrsen -> Osvojili ste " + points + " poena";
-    mainDiv.appendChild(endingMessage);
+    // let endingMessage = document.createElement("h1");
+    // endingMessage.innerText = "Eksperiment je zavrsen -> Osvojili ste " + points + " poena";
+    // mainDiv.appendChild(endingMessage);
     
-    createDataTable();
-    addDataToTable();
+    // createDataTable();
+    // addDataToTable();
 
-    let formsButton = document.createElement("button");
-    formsButton.innerText = "Anketa o eksperimentu";
-    formsButton.onclick = () => { window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b"; }
-    formsButton.style.width = "30%";
-    formsButton.style.fontSize = "125%";
-    formsButton.style.marginTop = "2%";
-    mainDiv.appendChild(formsButton);
+    // let formsButton = document.createElement("button");
+    // formsButton.innerText = "Anketa o eksperimentu";
+    // formsButton.onclick = () => { window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b"; }
+    // formsButton.style.width = "30%";
+    // formsButton.style.fontSize = "125%";
+    // formsButton.style.marginTop = "2%";
+    // mainDiv.appendChild(formsButton);
 
-    // sendDataToServer();
+    sendDataToServer();
 
     document.exitFullscreen();
+
+    let endingMessage = document.createElement("h1");
+    endingMessage.innerText = "Eksperiment je završen -> Pristupanje formi...";
+    mainDiv.appendChild(endingMessage);
+
+    setTimeout(() => { 
+        window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b";
+    }, 1500);
 
 }
 
@@ -556,7 +571,7 @@ function collectInfoFromStim()
     let isInFullscreen = window.innerHeight == screen.height;
     let timeTook = endTime - startTime;
     let trialAnswerInfo = [
-        currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook, Date(), points, browserName
+        uniqueID, currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook, Date(), points, browserName
     ];
 
     expInfo.push(trialAnswerInfo);
@@ -603,7 +618,7 @@ function sendDataToServer()
   
     for (let row of expInfo)
     {
-        csvString += row.join("|") + "\n";
+        csvString += row.join(",") + "\n";
     }
   
     // Build the URL to connect to

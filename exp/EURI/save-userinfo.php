@@ -6,10 +6,10 @@ $trialData = file_get_contents('php://input');
 $header = substr($trialData,0,50);
 //echo $header;
 $filenameArray = str_getcsv($header, ",");
-$filename = "EXP2rep_" . $filenameArray[0] . "_" . $filenameArray[1] . ".csv";
+$filename = "exp_euri.csv";
 //echo $filename;
 // $pathname = "../../../SecureData/HWH8/";
-$pathname = "SecureDataTemp/";
+$pathname = "../Podaci/";
  $fullname = $pathname . $filename;
  //echo $fullname;
 //open a file handler with read and write permission
