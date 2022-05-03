@@ -156,7 +156,10 @@ function initKeyEvents()
         if (!experimentStarted)
             return;
 
-        if (event.keyCode == 32 || event.code == "Space")
+        if (event.key.toLowerCase() == "a")
+            alert("Pritisnuo <A>");
+
+        if (event.keyCode == 32)
         {
             let mainDiv = document.getElementById("main-container");
             if (eventAvailable.intro)
