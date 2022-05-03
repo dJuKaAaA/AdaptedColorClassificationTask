@@ -172,7 +172,7 @@ function initKeyEvents()
         }
         if (eventAvailable.answer)
         {
-            switch (event.key)
+            switch (event.key.toLowerCase())
             {
                 case "a":
                     currentAnswer = "A";
@@ -210,9 +210,9 @@ function startExperiment()
 
     let instructionImg = document.createElement("img");
     instructionImg.id = "instruction-img";
-    instructionImg.src = "../Upustva/Euri/euri.png";
-    instructionImg.style.width = "45%";
-    instructionImg.style.height = "45%";
+    instructionImg.src = "./sig-uputstvo.png";
+    instructionImg.style.width = "42%";
+    instructionImg.style.height = "42%";
     instructionImg.alt = "Slika sa intstrukcijama";
     mainDiv.appendChild(instructionImg);
 
@@ -267,6 +267,14 @@ function finishExperiment()
     
     createDataTable();
     addDataToTable();
+
+    let formsButton = document.createElement("button");
+    formsButton.innerText = "Anketa o eksperimentu";
+    formsButton.onclick = () => { window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b"; }
+    formsButton.style.width = "30%";
+    formsButton.style.fontSize = "125%";
+    formsButton.style.marginTop = "2%";
+    mainDiv.appendChild(formsButton);
 
     // sendDataToServer();
 
@@ -423,7 +431,7 @@ function nextTrial()
     eventAvailable.answer = true;
 
     createTrial();
-    answerTimeId = setTimeout(continuePanel, 3000, 2);
+    answerTimeId = setTimeout(continuePanel, 3000, 3);
     startTime = Date.now();
 
 }
@@ -447,8 +455,8 @@ function continuePanel(answeredCorrectly)
     // safety measures
     if (answeredCorrectly < 0)
         answeredCorrectly = 0;
-    else if (answeredCorrectly > 2)
-        answeredCorrectly = 2; 
+    else if (answeredCorrectly > 3)
+        answeredCorrectly = 3; 
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -467,19 +475,37 @@ function continuePanel(answeredCorrectly)
     switch (answeredCorrectly)
     {
         case 0:
-            pointsAddedLost.innerText = "+10€";
+            pointsAddedLost.innerText = "+10 poena";
+            points += 10;
             break;
         case 1:
-            pointsAddedLost.innerText = "-10€";
+            pointsAddedLost.innerText = "-10 poena";
+            points -= 10;
             break;
         case 2:
-            pointsAddedLost.innerText = "+0€";
+            pointsAddedLost.innerText = "+0 poena";
+            break;
+        case 3:
+            if (currentPercentage > 50)
+            {
+                pointsAddedLost.innerText = "+5 poena";
+                points += 5;
+            }
+            else if (currentPercentage < 50)
+            {
+                pointsAddedLost.innerText = "-5 poena";
+                points -= 5;
+            }
+            else
+            {
+                pointsAddedLost.innerText = "+0 poena";
+            }
             break;
         default:
             pointsAddedLost.innerText = "...";
             break;
     }
-    balance.innerText = "Balans: " + points + "€";
+    balance.innerText = "Balans: " + points + " poena";
     proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
 
     mainDiv.appendChild(feedback);

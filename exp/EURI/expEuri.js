@@ -172,18 +172,16 @@ function initKeyEvents()
         }
         if (eventAvailable.answer)
         {
-            switch (event.key)
+            switch (event.key.toLowerCase())
             {
                 case "a":
                     currentAnswer = "A";
                     if (currentPercentage > 50)
                     {
-                        points += 10;
                         continuePanel(0);
                     }
                     else if (currentPercentage < 50)
                     {
-                        points -= 10;
                         continuePanel(1);
                     }
                     else
@@ -210,9 +208,9 @@ function startExperiment()
 
     let instructionImg = document.createElement("img");
     instructionImg.id = "instruction-img";
-    instructionImg.src = "../Upustva/Sig/sig.png";
-    instructionImg.style.width = "45%";
-    instructionImg.style.height = "45%";
+    instructionImg.src = "./euri-uputstvo.png";
+    instructionImg.style.width = "42%";
+    instructionImg.style.height = "42%";
     instructionImg.alt = "Slika sa intstrukcijama";
     mainDiv.appendChild(instructionImg);
 
@@ -268,6 +266,14 @@ function finishExperiment()
     createDataTable();
     addDataToTable();
 
+    let formsButton = document.createElement("button");
+    formsButton.innerText = "Anketa o eksperimentu";
+    formsButton.onclick = () => { window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b"; }
+    formsButton.style.width = "30%";
+    formsButton.style.fontSize = "125%";
+    formsButton.style.marginTop = "2%";
+    mainDiv.appendChild(formsButton);
+   
     // sendDataToServer();
 
     document.exitFullscreen();
@@ -467,30 +473,21 @@ function continuePanel(answeredCorrectly)
     switch (answeredCorrectly)
     {
         case 0:
-            pointsAddedLost.innerText = "+10 poena";
+            pointsAddedLost.innerText = "+10€";
+            points += 10;
             break;
         case 1:
-            pointsAddedLost.innerText = "-10 poena";
+            pointsAddedLost.innerText = "-10€";
+            points -= 10;
             break;
         case 2:
-            if (currentPercentage > 50)
-            {
-                pointsAddedLost.innerText = "+5";
-            }
-            else if (currentPercentage < 50)
-            {
-                pointsAddedLost.innerText = "-5";
-            }
-            else
-            {
-                pointsAddedLost.innerText = "+0";
-            }
+            pointsAddedLost.innerText = "+0€";
             break;
         default:
             pointsAddedLost.innerText = "...";
             break;
     }
-    balance.innerText = "Balans: " + points + " poena";
+    balance.innerText = "Balans: " + points + "€";
     proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
 
     mainDiv.appendChild(feedback);

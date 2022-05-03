@@ -1,0 +1,315 @@
+<html>
+<head>
+
+  <meta charset="utf-8" />
+  <title>Eksperiment - Demografija</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+
+      body {
+        font-family: "Times New Roman", Times, serif;
+      }
+
+      h1 {
+        text-align:center;
+      }
+
+      h3 {
+        text-align:center;
+        margin-right: 10%;
+        margin-left: 10%;
+
+      }
+
+
+      p {
+          text-align:center;
+      }
+
+      form {
+        position: absolute;
+        left: 40%;
+        top: 60%;
+        width: 500px;
+
+      }
+      /* Style the button */
+      button {
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        height: 30px;
+        width: 200px;
+        left: 85%;
+        top: 95%;
+        margin-top: -15px;   /* = -height / 2   */
+        margin-left: -100px; /* = -width / 2    */
+        position: fixed;     /* Fixed is better */
+
+      }
+
+      .button2 {
+        left: 15%;
+      }
+
+      input[type=text] {
+        width: 40%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        /* border: 2px solid red;
+        border-radius: 4px; */
+      }
+
+      input[type=number] {
+        width: 10%
+      }
+
+      .checklist {
+        position: relative;
+        left: 25%;
+        top: 10%;
+        text-align: left;
+        border-style: solid black;
+        border-width: 5px;
+        /* display: inline-block; */
+        padding:5px 30px;
+      }
+
+
+      .border {
+        position: relative;
+        left: 25%;
+        top: 1%;
+        border-style: dashed;
+        border-width: 5px;
+        border-color: grey;
+        text-align: center;
+        width: 50%;
+        padding: 12px 12px;
+      }
+
+</style>
+
+<script type="text/javascript" src="imtScripts.js"></script>
+
+</head>
+
+<body>
+
+<script>
+
+    var sessionStart;
+    var sessionKey;
+    var sourceString
+    var pageString;
+    var thisParam;
+    var uniqueID;
+    var thisParam1;
+    var thisParam2;
+    var thisParam3;
+    var thisParam4;
+
+    if (thisParam1 = getUrlParameter('ID')) {
+      sessionStart = thisParam1;
+    } else {
+      sessionStart = pad(Date.now(),16);
+    }
+
+    if (thisParam2 = getUrlParameter('SESSION')) {
+      sessionKey = thisParam2;
+    } else {
+      sessionKey = Math.floor(Math.random() * 1000);
+      sessionKey = pad(sessionKey,4);
+    }
+
+    if (thisParam3 = getUrlParameter('SOURCE')!=0) {
+       sourceString= "&SOURCE=PROLIFIC";
+    } else {
+      sourceString = "&SOURCE=UNKNOWN";
+    }
+
+    if (thisParam4 = getUrlParameter('DATA')!=0) {
+       dataString= "&DATA=1";
+    } else {
+      dataString = "&DATA=0";
+    }
+
+
+    uniqueID = sessionStart + "_" + sessionKey;
+
+    console.log(uniqueID);
+
+    function processDemographics() {
+
+    }
+
+
+
+</script>
+
+
+&nbsp;
+&nbsp;
+
+<h1>Demografski podaci za eksperiment o SIVIM SKUPOVIMA</h1>
+
+
+
+<h3>Molimo vas da popunite ove podatke o sebi pre nego počnete sam eksperiment.</h3>
+
+<div class = "border">
+  <form id = "demograpghicForm" class="checklist">
+    <label for="idBox">Session ID</label>
+    <input type="text" id="idBox" name="idBox" readonly><br><br>
+     <label>POL :</label>
+    <label>
+    <input type="radio" id=" female" name="gender" value="female">&nbsp;Ženski
+    </label>
+    <label>
+    <input type="radio" id="male" name="gender" value="male">&nbsp;Muški
+    </label>
+    <label>
+    <input type="radio" id=" other" name="gender" value="other">&nbsp;Drugo
+    </label><br><br>
+    <label for="quantity">Starost/godine: </label>
+    <input type="number" id="quantity" name="quantity" min="1" max="100"><br><br>
+    <label>Dominantna ruka :</label>
+    <label>
+    <input type="radio" id="left" name="hand" value="left">&nbsp;Leva
+    </label>
+    <label>
+    <input type="radio" id="right" name="hand" value="right">&nbsp;Desna
+    </label>
+    <label>
+    <input type="radio" id="both" name="hand" value="both">&nbsp;Obe
+    </label><br><br>
+    <label for="uniID">Broj indeksa :</label>
+    <input type="text" id="uniID" name="uniID"><br><br>
+    <!-- <label for="faceSkill">Prepoznavanje lica (1=loše 5=odlično) :</label>
+    <select type="select" id="faceSkill" name="faceSkill">
+      <option></option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option> -->
+    </select>
+
+
+
+
+
+  </form>
+</div>
+
+<script>
+document.getElementById("idBox").value = uniqueID;
+
+var subText;
+
+function submitDemographics() {
+  var thisForm = document.getElementById("demograpghicForm");
+  console.log(thisForm.length);
+  subText = ""; //sessionStart + "_" + sessionKey + ",";
+
+  for (var i = 0; i < thisForm.length; i++) {
+    if (thisForm.elements[i].type == "radio" && thisForm.elements[i].checked) {
+      subText += thisForm.elements[i].value + ",";
+    }
+    if (thisForm.elements[i].type == "number" && thisForm.elements[i].value > 5 && thisForm.elements[i].value < 100) {
+      subText += thisForm.elements[i].value + ",";
+    }
+
+    if (thisForm.elements[i].type == "text" && thisForm.elements[i].value.length > 0) {
+      subText += thisForm.elements[i].value + ",";
+    }
+
+    // if (thisForm.elements[i].id == "faceSkill" && thisForm.elements[i].selectedIndex > 0) {
+    //     console.log("something");
+    //     subText += thisForm.elements[i].value + ",";
+    // }
+
+  }
+
+  subText += Date() + "\n";
+
+  console.log(subText);
+  console.log(subText.split(",").length);
+
+  if (subText.split(",").length == 6) {
+    sendToServer();
+
+    setTimeout(function() {
+        launchExperiment();},1000);
+
+  } else {
+    alert("Pazite! Niste popunili neko od polja");
+  }
+
+
+}
+
+function sendToServer() {
+
+  //creating XMLhttpRequest object
+   var xhr;
+  	 if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+      xhr = new XMLHttpRequest();
+  } else if (window.ActiveXObject) { // IE 8 and older
+      xhr = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+
+  //alert(data);
+    // Build the URL to connect to
+    var url = "save-user-demographics.php";
+//    var url = "http://localhost/save-userinfo.php";
+
+    // Open a connection to the server
+    xhr.open("POST", url, true);
+
+    // declaring that the data being sent is in XML format
+    xhr.setRequestHeader("Content-Type", "text/plain");
+
+    // Send the request
+    xhr.send(subText);
+  }
+
+
+
+function launchExperiment() {
+
+  var pageString = "euri.html?ID=";
+  var secondString = "&SESSION=";
+  var thirdString = "&CONSENT=1"
+  var finalURL = pageString+sessionStart.toString()+secondString+sessionKey.toString()+thirdString+sourceString+dataString;
+
+  window.location.href = finalURL; //encodeURIComponent(finalURL);
+
+}
+
+</script>
+
+<div left = 50%>
+
+  <form>
+
+</form>
+
+
+
+
+  <!-- <form>
+<input type="number" min="1" max="100">
+</form> -->
+
+</div>
+
+<button id="exp_button" onclick="submitDemographics()">Continue</button>
+
+
+
+</body>
+</html>
