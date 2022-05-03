@@ -152,7 +152,7 @@ function initKeyEvents()
     {
         if (isKeyDown)
             return;
-
+        
         if (!experimentStarted)
             return;
 
@@ -221,7 +221,7 @@ function startExperiment()
 
     let instructionImg = document.createElement("img");
     instructionImg.id = "instruction-img";
-    instructionImg.src = "./sig-uputstvo.png";
+    instructionImg.src = "./euri-uputstvo.png";
     instructionImg.style.width = "42%";
     instructionImg.style.height = "42%";
     instructionImg.alt = "Slika sa intstrukcijama";
@@ -268,8 +268,6 @@ function finishExperiment()
 {
     // shows the ending message and uploads the data collected to the server
 
-    experimentStarted = false;
-
     let mainDiv = document.getElementById("main-container");
     let canvas = document.getElementById("main-canvas");
     mainDiv.removeChild(canvas);
@@ -288,7 +286,7 @@ function finishExperiment()
     // formsButton.style.fontSize = "125%";
     // formsButton.style.marginTop = "2%";
     // mainDiv.appendChild(formsButton);
-
+   
     sendDataToServer();
 
     document.exitFullscreen();
@@ -452,7 +450,7 @@ function nextTrial()
     eventAvailable.answer = true;
 
     createTrial();
-    answerTimeId = setTimeout(continuePanel, 3000, 3);
+    answerTimeId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
 
 }
@@ -476,8 +474,8 @@ function continuePanel(answeredCorrectly)
     // safety measures
     if (answeredCorrectly < 0)
         answeredCorrectly = 0;
-    else if (answeredCorrectly > 3)
-        answeredCorrectly = 3; 
+    else if (answeredCorrectly > 2)
+        answeredCorrectly = 2; 
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -496,37 +494,21 @@ function continuePanel(answeredCorrectly)
     switch (answeredCorrectly)
     {
         case 0:
-            pointsAddedLost.innerText = "+10 poena";
+            pointsAddedLost.innerText = "+10€";
             points += 10;
             break;
         case 1:
-            pointsAddedLost.innerText = "-10 poena";
+            pointsAddedLost.innerText = "-10€";
             points -= 10;
             break;
         case 2:
-            pointsAddedLost.innerText = "+0 poena";
-            break;
-        case 3:
-            if (currentPercentage > 50)
-            {
-                pointsAddedLost.innerText = "+5 poena";
-                points += 5;
-            }
-            else if (currentPercentage < 50)
-            {
-                pointsAddedLost.innerText = "-5 poena";
-                points -= 5;
-            }
-            else
-            {
-                pointsAddedLost.innerText = "+0 poena";
-            }
+            pointsAddedLost.innerText = "+0€";
             break;
         default:
             pointsAddedLost.innerText = "...";
             break;
     }
-    balance.innerText = "Balans: " + points + " poena";
+    balance.innerText = "Balans: " + points + "€";
     proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
 
     mainDiv.appendChild(feedback);
@@ -630,12 +612,12 @@ function sendDataToServer()
     }
   
     // Build the URL to connect to
+    //let url = "save-userinfo.php";
     let url = "save-userinfo.php";
-    // let url = "http://localhost/save-userinfo.php";
   
     // Open a connection to the server
     xhr.open("POST", url, true);
-  
+    
     // declaring that the data being sent is in XML format
     xhr.setRequestHeader("Content-Type", "text/plain");
   

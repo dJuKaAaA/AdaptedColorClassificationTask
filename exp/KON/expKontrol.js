@@ -143,6 +143,11 @@ function initKeyEvents()
     // initializes all keydown event listeners 
     // uses avaliableEvent as indicator for calling appropriate methods
 
+    if (!experimentStarted)
+    {
+        return;
+    }
+
     document.addEventListener("keyup", (event) =>
     {
         isKeyDown = false;
@@ -221,7 +226,7 @@ function startExperiment()
 
     let instructionImg = document.createElement("img");
     instructionImg.id = "instruction-img";
-    instructionImg.src = "./sig-uputstvo.png";
+    instructionImg.src = "./kontrol-uputstvo.png";
     instructionImg.style.width = "42%";
     instructionImg.style.height = "42%";
     instructionImg.alt = "Slika sa intstrukcijama";
@@ -267,8 +272,6 @@ function createColorInstructions(mainDiv) {
 function finishExperiment()
 {
     // shows the ending message and uploads the data collected to the server
-
-    experimentStarted = false;
 
     let mainDiv = document.getElementById("main-container");
     let canvas = document.getElementById("main-canvas");
@@ -452,7 +455,7 @@ function nextTrial()
     eventAvailable.answer = true;
 
     createTrial();
-    answerTimeId = setTimeout(continuePanel, 3000, 3);
+    answerTimeId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
 
 }
@@ -476,8 +479,8 @@ function continuePanel(answeredCorrectly)
     // safety measures
     if (answeredCorrectly < 0)
         answeredCorrectly = 0;
-    else if (answeredCorrectly > 3)
-        answeredCorrectly = 3; 
+    else if (answeredCorrectly > 2)
+        answeredCorrectly = 2; 
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -505,22 +508,6 @@ function continuePanel(answeredCorrectly)
             break;
         case 2:
             pointsAddedLost.innerText = "+0 poena";
-            break;
-        case 3:
-            if (currentPercentage > 50)
-            {
-                pointsAddedLost.innerText = "+5 poena";
-                points += 5;
-            }
-            else if (currentPercentage < 50)
-            {
-                pointsAddedLost.innerText = "-5 poena";
-                points -= 5;
-            }
-            else
-            {
-                pointsAddedLost.innerText = "+0 poena";
-            }
             break;
         default:
             pointsAddedLost.innerText = "...";
