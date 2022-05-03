@@ -127,6 +127,9 @@ let expHeaders = [
     "ID", "Answer", "Positive color percentage", "Negative color percentage", "Is fullscreen", "Reaction time in secs", "Answer date and time", "Total points at the time", "Browser"
 ];
 
+// indicates whether the experiment has started
+let experimentStarted = true;
+
 //----------------------------------------------------------------------------
 
 function main()
@@ -140,6 +143,11 @@ function initKeyEvents()
     // initializes all keydown event listeners 
     // uses avaliableEvent as indicator for calling appropriate methods
 
+    if (!experimentStarted)
+    {
+        return;
+    }
+
     document.addEventListener("keyup", (event) =>
     {
         isKeyDown = false;
@@ -148,6 +156,9 @@ function initKeyEvents()
     document.addEventListener("keydown", (event) =>
     {
         if (isKeyDown)
+            return;
+
+        if (!experimentStarted)
             return;
 
         if (event.keyCode == 32)
