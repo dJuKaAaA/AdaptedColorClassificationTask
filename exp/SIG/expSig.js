@@ -178,12 +178,10 @@ function initKeyEvents()
                     currentAnswer = "A";
                     if (currentPercentage > 50)
                     {
-                        points += 10;
                         continuePanel(0);
                     }
                     else if (currentPercentage < 50)
                     {
-                        points -= 10;
                         continuePanel(1);
                     }
                     else
