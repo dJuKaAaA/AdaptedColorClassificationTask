@@ -138,6 +138,29 @@ function main()
     startExperiment();
 }
 
+function openFullscreen() 
+{
+    // opens fullscreen depending on the browser used
+    let elem = document.documentElement;
+
+    if (elem.requestFullscreen) 
+    {
+        elem.requestFullscreen();
+    } 
+    else if (elem.mozRequestFullScreen)
+    {
+        elem.mozRequestFullScreen();
+    } 
+    else if (elem.webkitRequestFullscreen) 
+    {
+        elem.webkitRequestFullscreen();
+    }
+    else if (elem.msRequestFullscreen)
+    {
+        elem.msRequestFullscreen();
+    }
+}
+
 function initKeyEvents()
 {
     // initializes all keydown event listeners 
@@ -161,7 +184,7 @@ function initKeyEvents()
             let mainDiv = document.getElementById("main-container");
             if (eventAvailable.intro)
             {
-                document.documentElement.requestFullscreen();
+                openFullscreen();
                 mainDiv.removeChild(document.getElementById("instruction-img"));
                 mainDiv.removeChild(document.getElementById("color-instructions"));
                 mainDiv.removeChild(document.getElementById("proceed-experiment"));
@@ -174,7 +197,7 @@ function initKeyEvents()
                 if (oddsLeft.length > 0)
                 {
                     if (window.innerHeight != screen.height)
-                        document.documentElement.requestFullscreen();
+                        openFullscreen();
                     nextTrial();
                 }
                 else 
