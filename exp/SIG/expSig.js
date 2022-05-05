@@ -252,7 +252,7 @@ function startExperiment()
 
     createColorInstructions(mainDiv);
     
-    let proceedToExperimentText = document.createElement("h2");
+    let proceedToExperimentText = document.createElement("h3");
     proceedToExperimentText.id = "proceed-experiment";
     proceedToExperimentText.innerText = "Pritisnite <SPACE> da biste počeli eksperiment";
     mainDiv.appendChild(proceedToExperimentText);
@@ -268,8 +268,8 @@ function createColorInstructions(mainDiv) {
     let negativeDiv = document.createElement("div");
     positiveDiv.style.display = "inline-block";
     negativeDiv.style.display = "inline-block";
-    positiveDiv.style.fontSize = "25px";
-    negativeDiv.style.fontSize = "25px";
+    positiveDiv.style.fontSize = "125%";
+    negativeDiv.style.fontSize = "125%";
     positiveDiv.style.fontWeight = "bold";
     negativeDiv.style.fontWeight = "bold";
     positiveDiv.innerText = "\"Pozitivna\" boja <A>";
@@ -362,8 +362,8 @@ function createCanvas()
     let mainDiv = document.getElementById("main-container");
 
     let canvas = document.createElement("canvas");
-    canvas.width = 800;
-    canvas.height = 600;
+    canvas.width = window.screen.width / 2;
+    canvas.height = window.screen.height / 1.5 + 10;
     canvas.style.marginTop = "5%";
     canvas.style.backgroundColor = "rgb(255, 255, 255)";
     canvas.id = "main-canvas";
@@ -386,19 +386,20 @@ function createTrial()
 {
     // creates a trial and collects information from it
     
-    let trialSize = 250;
+    let trialSize = window.screen.height / 3.0;
     let pixelSize = 2;
     let positivePixelsLeft = currentPercentage / 100 * pixelSize * trialSize;
     let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * trialSize; 
     let trial = [];
+    let xOffset = (window.screen.width / 2 - window.screen.height / 1.5) / 2;
 
     for (let i = 0; i < trialSize; ++i)
     {
         let row = [];
-        let x = i * pixelSize + 150;
+        let x = i * pixelSize + xOffset;
         for (let j = 0; j < trialSize; ++j)
         {
-            let y = j * pixelSize + 50;
+            let y = j * pixelSize + 5;
             let ranNum = Math.random();
             if (ranNum > 0.5)
             {
@@ -567,12 +568,18 @@ function drawCross()
     let canvas = document.getElementById("main-canvas");
     let context = canvas.getContext("2d")
 
+    // making a cross by removing the 4 edges of the larger rectangle 
+    let startingRecSize = 30;
+    let crossSize = startingRecSize / 3;
+    let x = (canvas.width - startingRecSize) / 2;
+    let y = (canvas.height - startingRecSize) / 2;
+
     context.fillStyle = "rgb(0, 0, 0)";
-    context.fillRect(385, 285, 30, 30);
-    context.clearRect(385, 285, 10, 10);
-    context.clearRect(405, 285, 10, 10);
-    context.clearRect(385, 305, 10, 10);
-    context.clearRect(405, 305, 10, 10);
+    context.fillRect(x, y, crossSize * 3, crossSize * 3);
+    context.clearRect(x, y, crossSize, crossSize);
+    context.clearRect(x + crossSize * 2, y, crossSize, crossSize);
+    context.clearRect(x, y + crossSize * 2, crossSize, crossSize);
+    context.clearRect(x + crossSize * 2, y + crossSize * 2, crossSize, crossSize);
 
 }
 
