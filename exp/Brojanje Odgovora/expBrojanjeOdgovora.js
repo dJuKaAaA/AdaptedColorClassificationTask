@@ -65,13 +65,6 @@ class Colors
 // global variables:
 //----------------------------------------------------------------------------
 
-// identificator of the user
-let name = "ID";
-name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-var results = regex.exec(location.search);
-let uniqueID = results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-
 // number of experiments per all proportions
 let expNum = 1;
 
@@ -124,7 +117,7 @@ let expInfo = [];
 
 // experiment table headers
 let expHeaders = [
-    "ID", "Answer", "Positive color percentage", 
+    "Answer", "Positive color percentage", 
     "Negative color percentage", "Is fullscreen", 
     "Reaction time in secs", "Answer date and time", 
     "Total points at the time", "Browser",
@@ -233,7 +226,7 @@ function handleAnswer(answer) {
                 currentAnswerCorrectness = false;
             }
             else {
-                currentAnswerCorrectness = undefined;
+                currentAnswerCorrectness = "undefined";
             }
             continuePanel(3);
             break;
@@ -247,7 +240,7 @@ function handleAnswer(answer) {
                 currentAnswerCorrectness = true;
             }
             else {
-                currentAnswerCorrectness = undefined;
+                currentAnswerCorrectness = "undefined";
             }
             continuePanel(3);
             break;
@@ -317,6 +310,8 @@ function finishExperiment()
         
     createDataTable();
     addDataToTable();
+
+    createExpDataParagraph();
 
     document.exitFullscreen();
 }
@@ -492,7 +487,7 @@ function continuePanel(answeredCorrectly)
     else
     {
         currentAnswer = "N/A";
-        currentAnswerCorrectness = undefined;
+        currentAnswerCorrectness = "undefined";
     }
 
     let mainDiv = document.getElementById("main-container");
@@ -585,15 +580,13 @@ function collectInfoFromStim()
     let isInFullscreen = window.innerHeight == screen.height;
     let timeTook = endTime - startTime;
     let trialAnswerInfo = [
-        uniqueID, currentAnswer, currentPercentage, 
+        currentAnswer, currentPercentage, 
         100 - currentPercentage, isInFullscreen, 
         timeTook, Date(), points, browserName,
         currentAnswerCorrectness, correctAnswers
     ];
 
     expInfo.push(trialAnswerInfo);
-    console.log(trialAnswerInfo);
-
 }
 
 function addDataToTable()
@@ -614,6 +607,18 @@ function addDataToTable()
 
         dataTable.appendChild(expRow);
     }
+}
+
+function createExpDataParagraph()
+{
+    let csvString = "";
+    for (let row of expInfo)
+    {
+        csvString += row.join(",") + "\n";
+    }
+    let expDataParagraph = document.createElement("p");
+    expDataParagraph.innerText = csvString;
+    document.getElementById("main-container").appendChild(expDataParagraph);
 
 }
 
