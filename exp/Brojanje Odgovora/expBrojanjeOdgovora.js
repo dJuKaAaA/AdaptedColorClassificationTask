@@ -66,7 +66,7 @@ class Colors
 //----------------------------------------------------------------------------
 
 // number of experiments per all proportions
-let expNum = 1;
+let expNum = 30;
 
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
@@ -498,10 +498,8 @@ function continuePanel(answeredCorrectly)
     feedback.id = "feedback";
 
     let pointsAddedLost = document.createElement("h1");
-    let balance = document.createElement("h2");
     let proceedMessage = document.createElement("h2");
     feedback.appendChild(pointsAddedLost);
-    feedback.appendChild(balance);
     feedback.appendChild(proceedMessage);
 
     switch (answeredCorrectly)
@@ -521,7 +519,6 @@ function continuePanel(answeredCorrectly)
             pointsAddedLost.innerText = "...";
             break;
     }
-    balance.innerText = "Broj tačnih odgovora: " + correctAnswers;
     proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
 
     mainDiv.appendChild(feedback);
