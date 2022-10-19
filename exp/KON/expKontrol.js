@@ -391,51 +391,38 @@ function createTrial()
     
     let trialSize = window.screen.height / 3.0;
     let pixelSize = 2;
-    let positivePixelsLeft = currentPercentage / 100 * pixelSize * trialSize;
-    let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * trialSize; 
-    let trial = [];
     let xOffset = (window.screen.width / 2 - window.screen.height / 1.5) / 2;
+    let yOffset = 5;
+    
+    let trial = [];
+    let coordinates = []
 
     for (let i = 0; i < trialSize; ++i)
     {
-        let row = [];
-        let x = i * pixelSize + xOffset;
         for (let j = 0; j < trialSize; ++j)
         {
-            let y = j * pixelSize + 5;
-            let ranNum = Math.random();
-            if (ranNum > 0.5)
-            {
-                if (positivePixelsLeft > 0)
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
-                    --positivePixelsLeft;
-                }
-                else 
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
-                    --negativePixelsLeft;
-                }
-            }
-            else
-            {
-                if (negativePixelsLeft > 0)
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
-                    --negativePixelsLeft;
-                }
-                else 
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
-                    --positivePixelsLeft;
-                }
-            }
+            coordinates.push({"x": i * pixelSize + xOffset, "y": j * pixelSize + yOffset});
         }
-        trial.push(row);
+    }
+
+    coordinates = coordinates.sort(function() { return Math.random() - 0.5; });
+
+    for (let coordinate of coordinates)
+    {
+        let x = coordinate["x"];
+        let y = coordinate["y"];
+        let ranNum = Math.random();
+        if (ranNum < (currentPercentage / 100))
+        {
+            trial.push({x: x, y: y, size: pixelSize, color: colors.positive});
+        }
+        else
+        {
+            trial.push({x: x, y: y, size: pixelSize, color: colors.negative});
+        }
     }
 
     drawTrial(trial)
-
 }
 
 function drawTrial(trial)
@@ -449,13 +436,10 @@ function drawTrial(trial)
 
     let canvas = document.getElementById("main-canvas");
     let context = canvas.getContext("2d");
-    for (let row of trial)
+    for (let pixel of trial)
     {
-        for (let rectInfo of row)
-        {
-            context.fillStyle = rectInfo.color;
-            context.fillRect(rectInfo.x, rectInfo.y, rectInfo.size, rectInfo.size);
-        }
+        context.fillStyle = pixel.color;
+        context.fillRect(pixel.x, pixel.y, pixel.size, pixel.size);
     }
 
 }
