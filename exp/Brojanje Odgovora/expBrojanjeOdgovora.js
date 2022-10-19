@@ -66,7 +66,7 @@ class Colors
 //----------------------------------------------------------------------------
 
 // number of experiments per all proportions
-let expNum = 30;
+let expNum = 60;
 
 // odds is a map with the percentage of the positive color 
 // and the value of the amount of stimuli left to create
