@@ -392,30 +392,22 @@ function createTrial()
     let yOffset = 5;
     
     let trial = [];
-    let coordinates = []
 
     for (let i = 0; i < trialSize; ++i)
     {
+        let x = i * pixelSize + xOffset;
         for (let j = 0; j < trialSize; ++j)
         {
-            coordinates.push({"x": i * pixelSize + xOffset, "y": j * pixelSize + yOffset});
-        }
-    }
-
-    coordinates = coordinates.sort(function() { return Math.random() - 0.5; });
-
-    for (let coordinate of coordinates)
-    {
-        let x = coordinate["x"];
-        let y = coordinate["y"];
-        let ranNum = Math.random();
-        if (ranNum < (currentPercentage / 100))
-        {
-            trial.push({x: x, y: y, size: pixelSize, color: colors.positive});
-        }
-        else
-        {
-            trial.push({x: x, y: y, size: pixelSize, color: colors.negative});
+            let y = j * pixelSize + yOffset;
+            let ranNum = Math.random();
+            if (ranNum < (currentPercentage / 100))
+            {
+                trial.push({x: x, y: y, size: pixelSize, color: colors.positive});
+            }
+            else
+            {
+                trial.push({x: x, y: y, size: pixelSize, color: colors.negative});
+            }
         }
     }
 
