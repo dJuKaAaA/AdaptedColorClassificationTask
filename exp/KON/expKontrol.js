@@ -479,8 +479,8 @@ function continuePanel(answeredCorrectly)
     // safety measures
     if (answeredCorrectly < 0)
         answeredCorrectly = 0;
-    else if (answeredCorrectly > 2)
-        answeredCorrectly = 2; 
+    else if (answeredCorrectly >= 2)
+        answeredCorrectly = Math.round(Math.random()); 
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -505,9 +505,6 @@ function continuePanel(answeredCorrectly)
         case 1:
             pointsAddedLost.innerText = "-10 poena";
             points -= 10;
-            break;
-        case 2:
-            pointsAddedLost.innerText = "+0 poena";
             break;
         default:
             pointsAddedLost.innerText = "...";

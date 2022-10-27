@@ -519,7 +519,16 @@ function continuePanel(answeredCorrectly)
             }
             else
             {
-                pointsAddedLost.innerText = "+0 poena";
+                if (Math.random() > 0.5)
+                {
+                    pointsAddedLost.innerText = "+5 poena";
+                    points += 5;
+                }
+                else 
+                {
+                    pointsAddedLost.innerText = "-5 poena";
+                    points -= 5;
+                }
             }
             break;
         default:
