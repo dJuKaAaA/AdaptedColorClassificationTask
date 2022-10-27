@@ -386,51 +386,30 @@ function createTrial()
     
     let trialSize = window.screen.height / 3.0;
     let pixelSize = 2;
-    let positivePixelsLeft = currentPercentage / 100 * pixelSize * trialSize;
-    let negativePixelsLeft = (1 - currentPercentage / 100) * pixelSize * trialSize; 
-    let trial = [];
     let xOffset = (window.screen.width / 2 - window.screen.height / 1.5) / 2;
+    let yOffset = 5;
+    
+    let trial = [];
 
     for (let i = 0; i < trialSize; ++i)
     {
-        let row = [];
         let x = i * pixelSize + xOffset;
         for (let j = 0; j < trialSize; ++j)
         {
-            let y = j * pixelSize + 5;
+            let y = j * pixelSize + yOffset;
             let ranNum = Math.random();
-            if (ranNum > 0.5)
+            if (ranNum < (currentPercentage / 100))
             {
-                if (positivePixelsLeft > 0)
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
-                    --positivePixelsLeft;
-                }
-                else 
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
-                    --negativePixelsLeft;
-                }
+                trial.push({x: x, y: y, size: pixelSize, color: colors.positive});
             }
             else
             {
-                if (negativePixelsLeft > 0)
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.negative});
-                    --negativePixelsLeft;
-                }
-                else 
-                {
-                    row.push({x: x, y: y, size: pixelSize, color: colors.positive});
-                    --positivePixelsLeft;
-                }
+                trial.push({x: x, y: y, size: pixelSize, color: colors.negative});
             }
         }
-        trial.push(row);
     }
 
     drawTrial(trial)
-
 }
 
 function drawTrial(trial)
@@ -444,13 +423,10 @@ function drawTrial(trial)
 
     let canvas = document.getElementById("main-canvas");
     let context = canvas.getContext("2d");
-    for (let row of trial)
+    for (let pixel of trial)
     {
-        for (let rectInfo of row)
-        {
-            context.fillStyle = rectInfo.color;
-            context.fillRect(rectInfo.x, rectInfo.y, rectInfo.size, rectInfo.size);
-        }
+        context.fillStyle = pixel.color;
+        context.fillRect(pixel.x, pixel.y, pixel.size, pixel.size);
     }
 
 }
