@@ -236,7 +236,7 @@ function handleAnswer(answer) {
                 currentAnswerCorrectness = false;
             }
             else {
-                currentAnswerCorrectness = "undefined";
+                currentAnswerCorrectness = Math.random() > 0.5;
             }
             continuePanel(3);
             break;
@@ -250,7 +250,7 @@ function handleAnswer(answer) {
                 currentAnswerCorrectness = true;
             }
             else {
-                currentAnswerCorrectness = "undefined";
+                currentAnswerCorrectness = Math.random() > 0.5;
             }
             continuePanel(3);
             break;
