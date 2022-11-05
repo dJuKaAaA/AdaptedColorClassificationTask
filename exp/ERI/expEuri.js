@@ -222,7 +222,7 @@ function initKeyEvents()
                     }
                     else
                     {
-                        continuePanel(2);
+                        continuePanel(3);
                     }
                     break;
                 case "k":
@@ -459,8 +459,6 @@ function continuePanel(answeredCorrectly)
 {
     // displays the panel that contains information about how the user did the previous
     // stimulus and waits for the user's input to proceed with the experiment
-    // parameter answeredCorrectly expects a number between 0 and 2
-    // 0 -> correct, 1 -> incorrect, 2 -> nothing
 
     endTime = Date.now();
     let timeTook = endTime - startTime;
@@ -471,11 +469,9 @@ function continuePanel(answeredCorrectly)
     else
         currentAnswer = "N/A";
 
-    // safety measures
-    if (answeredCorrectly < 0)
-        answeredCorrectly = 0;
-    else if (answeredCorrectly >= 2)
-        answeredCorrectly = Math.round(Math.random()); 
+    // special case
+    if (answeredCorrectly == 3)
+        answeredCorrectly = Math.round(Math.random() * 1);
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -500,6 +496,9 @@ function continuePanel(answeredCorrectly)
         case 1:
             pointsAddedLost.innerText = "-10€";
             points -= 10;
+            break;
+        case 2:
+            pointsAddedLost.innerText = "+0€"
             break;
         default:
             pointsAddedLost.innerText = "...";

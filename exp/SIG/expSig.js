@@ -222,7 +222,7 @@ function initKeyEvents()
                     }
                     else
                     {
-                        continuePanel(2);
+                        continuePanel(3);
                     }
                     break;
                 case "k":
@@ -452,7 +452,7 @@ function nextTrial()
     eventAvailable.answer = true;
 
     createTrial();
-    answerTimeId = setTimeout(continuePanel, 3000, 3);
+    answerTimeId = setTimeout(continuePanel, 3000, 4);
     startTime = Date.now();
 
 }
@@ -461,8 +461,6 @@ function continuePanel(answeredCorrectly)
 {
     // displays the panel that contains information about how the user did the previous
     // stimulus and waits for the user's input to proceed with the experiment
-    // parameter answeredCorrectly expects a number between 0 and 2
-    // 0 -> correct, 1 -> incorrect, 2 -> nothing
 
     endTime = Date.now();
     let timeTook = endTime - startTime;
@@ -473,11 +471,8 @@ function continuePanel(answeredCorrectly)
     else
         currentAnswer = "N/A";
 
-    // safety measures
-    if (answeredCorrectly < 0)
-        answeredCorrectly = 0;
-    else if (answeredCorrectly > 3)
-        answeredCorrectly = 3; 
+    if (answeredCorrectly == 3)
+        answeredCorrectly = Math.round(Math.random() * 1);
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -506,7 +501,7 @@ function continuePanel(answeredCorrectly)
         case 2:
             pointsAddedLost.innerText = "+0 poena";
             break;
-        case 3:
+        case 4:
             if (currentPercentage > 50)
             {
                 pointsAddedLost.innerText = "+5 poena";
