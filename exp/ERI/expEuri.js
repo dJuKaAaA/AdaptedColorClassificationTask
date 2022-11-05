@@ -310,13 +310,19 @@ function finishExperiment()
     // formsButton.style.marginTop = "2%";
     // mainDiv.appendChild(formsButton);
    
-    sendDataToServer();
+    // comment out when not using a server
+    // sendDataToServer();
+
+    // comment out when using a server
+    saveCSVFile();
 
     document.exitFullscreen();
 
     let endingMessage = document.createElement("h1");
     endingMessage.innerText = "Eksperiment je završen -> Pristupanje formi...";
     mainDiv.appendChild(endingMessage);
+
+
 
     setTimeout(() => { 
         window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b";
@@ -625,6 +631,18 @@ function sendDataToServer()
   
     // Send the request
     xhr.send(csvString);
+}
+
+function saveCSVFile() 
+{
+    // used for saving .csv file when the experiment is not being done from a server
+    let csvString = "";
+    for (let row of expInfo)
+    {
+        csvString += row.join(",") + "\n";
+    }
+    let blob = new Blob([csvString], { type: "text/plain; charset=utf-8;"});
+    saveAs(blob, "eri.csv");
 }
 
 main();

@@ -312,7 +312,11 @@ function finishExperiment()
     // formsButton.style.marginTop = "2%";
     // mainDiv.appendChild(formsButton);
 
-    sendDataToServer();
+    // comment out when not using a server
+    // sendDataToServer();
+
+    // comment out when using a server
+    saveCSVFile();
 
     document.exitFullscreen();
 
@@ -651,6 +655,18 @@ function sendDataToServer()
   
     // Send the request
     xhr.send(csvString);
+}
+
+function saveCSVFile() 
+{
+    // used for saving .csv file when the experiment is not being done from a server
+    let csvString = "";
+    for (let row of expInfo)
+    {
+        csvString += row.join(",") + "\n";
+    }
+    let blob = new Blob([csvString], { type: "text/plain; charset=utf-8;"});
+    saveAs(blob, "eri.csv");
 }
 
 main();
