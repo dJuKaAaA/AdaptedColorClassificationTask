@@ -510,7 +510,7 @@ function continuePanel(answeredCorrectly)
             break;
     }
     balance.innerText = "Balans: " + points + " poena";
-    proceedMessage.innerText = "Pritisnite <SPACE> za nastavak, " + currentPercentage;
+    proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
 
     mainDiv.appendChild(feedback);
     eventAvailable.answer = false;
