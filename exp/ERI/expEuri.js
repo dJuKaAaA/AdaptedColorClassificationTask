@@ -8,52 +8,12 @@ class Colors
 
         // getting the random value of the colors
         //-----------------------------------------------------------
-        let r_pos = "";
-        let g_pos = "";
-        let b_pos = "";
-        let r_neg = "";
-        let g_neg = "";
-        let b_neg = "";
-        let ranNum = Math.floor(Math.random() * 3);
-
-        let colorRange = 50;
-
-        // first random value is 255 (so that the color is high in contrast)
-        // the other to are randomly selected from 0 to colorRange
-        // negative color is the value of 255 - positive_value
-        switch (ranNum)
-        {
-            case 0:
-                r_pos = "255";
-                r_neg = "0";
-                ranNum = Math.floor(Math.random() * colorRange);
-                g_pos = ranNum.toString();
-                g_neg = (255 - ranNum).toString();
-                ranNum = Math.floor(Math.random() * colorRange);
-                b_pos = ranNum.toString();
-                b_neg = (255 - ranNum).toString();
-                break;
-            case 1:
-                g_pos = "255";
-                g_neg = "0";
-                ranNum = Math.floor(Math.random() * colorRange);
-                r_pos = ranNum.toString();
-                r_neg = (255 - ranNum).toString();
-                ranNum = Math.floor(Math.random() * colorRange);
-                b_pos = ranNum.toString();
-                b_neg = (255 - ranNum).toString();
-                break;
-            case 2:
-                b_pos = "255";
-                b_neg = "0";
-                ranNum = Math.floor(Math.random() * colorRange);
-                g_pos = ranNum.toString();
-                g_neg = (255 - ranNum).toString();
-                ranNum = Math.floor(Math.random() * colorRange);
-                r_pos = ranNum.toString();
-                r_neg = (255 - ranNum).toString();
-                break;
-        }
+        let r_pos = Math.floor(Math.random() * 256);
+        let g_pos = Math.floor(Math.random() * 256);
+        let b_pos = Math.floor(Math.random() * 256);
+        let r_neg = 255 - r_pos;
+        let g_neg = 255 - g_pos;
+        let b_neg = 255 - b_pos;
         //-----------------------------------------------------------
 
         this.positive = "rgb(" + r_pos + ", " + g_pos + ", " + b_pos + ")";
@@ -280,6 +240,8 @@ function createColorInstructions(mainDiv) {
     negativeDiv.style.backgroundColor = colors.negative;
     positiveDiv.style.color = "black";
     negativeDiv.style.color = "black";
+    positiveDiv.style.textShadow = "0px 0px 10px white"
+    negativeDiv.style.textShadow = "0px 0px 10px white"
 
     colorInstructionDiv.appendChild(positiveDiv);
     colorInstructionDiv.appendChild(negativeDiv);
