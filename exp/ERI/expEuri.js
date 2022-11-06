@@ -90,6 +90,10 @@ let expHeaders = [
 // indicates whether the experiment has started
 let experimentStarted = true;
 
+// tutorial trials count
+let tutorialTrialsCompleted = 0;
+const tutorialTrialsCount = 3;
+
 //----------------------------------------------------------------------------
 
 function main()
@@ -214,7 +218,7 @@ function startExperiment()
     
     let proceedToExperimentText = document.createElement("h3");
     proceedToExperimentText.id = "proceed-experiment";
-    proceedToExperimentText.innerText = "Pritisnite <SPACE> da biste počeli eksperiment";
+    proceedToExperimentText.innerText = "Pritisnite <SPACE> da biste počeli probu";
     mainDiv.appendChild(proceedToExperimentText);
 
 }
@@ -428,6 +432,8 @@ function continuePanel(answeredCorrectly)
     // displays the panel that contains information about how the user did the previous
     // stimulus and waits for the user's input to proceed with the experiment
 
+    tutorialTrialsCompleted = (tutorialTrialsCompleted <= tutorialTrialsCount) ? (tutorialTrialsCompleted + 1) : (tutorialTrialsCount + 1);
+
     endTime = Date.now();
     let timeTook = endTime - startTime;
 
@@ -473,13 +479,16 @@ function continuePanel(answeredCorrectly)
             break;
     }
     balance.innerText = "Balans: " + points + "€";
-    proceedMessage.innerText = "Pritisnite <SPACE> za nastavak";
+    proceedMessage.innerText = (tutorialTrialsCompleted != tutorialTrialsCount) ? ((tutorialTrialsCompleted < tutorialTrialsCount) ? ("Pritisnite <SPACE> za nastavak (proba)") : ("Pritisnite <SPACE> za nastavak")) : ("Pritisnite <SPACE> da biste poceli eksperiment");
 
     mainDiv.appendChild(feedback);
     eventAvailable.answer = false;
     eventAvailable.continue = true;
 
-    collectInfoFromStim();
+    if (tutorialTrialsCompleted > tutorialTrialsCount)
+        collectInfoFromStim();
+    else if (tutorialTrialsCompleted == tutorialTrialsCount)
+        points = 0;
 
 }
 
