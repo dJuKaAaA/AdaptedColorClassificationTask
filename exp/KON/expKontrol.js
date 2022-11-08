@@ -94,6 +94,9 @@ let experimentStarted = true;
 let tutorialTrialsCompleted = 0;
 const tutorialTrialsCount = 3;
 
+// is debug mode enabled
+let debugMode = false;
+
 //----------------------------------------------------------------------------
 
 function main()
@@ -200,6 +203,10 @@ function initKeyEvents()
                     break;
             }
         }
+        if (event.key.toLowerCase())
+        {
+            debugMode = !debugMode;
+        }
     });
 }
 
@@ -282,10 +289,10 @@ function finishExperiment()
     // mainDiv.appendChild(formsButton);
 
     // comment out when not using a server
-    // sendDataToServer();
+    sendDataToServer();
 
     // comment out when using a server
-    saveCSVFile();
+    // saveCSVFile();
 
     document.exitFullscreen();
 
@@ -427,7 +434,11 @@ function nextTrial()
     createTrial();
     answerTimeId = setTimeout(continuePanel, 3000, 2);
     startTime = Date.now();
-
+    
+    if (debugMode)
+    {
+        console.log(`Current proportions: ${currentPercentage}:${100 - currentPercentage}`)
+    }
 }
 
 function continuePanel(answeredCorrectly)
