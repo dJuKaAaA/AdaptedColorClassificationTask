@@ -5,20 +5,24 @@ class Colors
 {
     constructor()
     {
+        // getting the colors
+        //-------------------------------------------------------------
+        const HSBToRGB = (h, s, b) => {
+            s /= 100;
+            b /= 100;
+            const k = (n) => (n + h / 60) % 6;
+            const f = (n) => b * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)));
+            return [255 * f(5), 255 * f(3), 255 * f(1)];
+        };
+        let pos = Math.round(Math.random() * 360);
+        let neg = (pos + 180) % 360;
 
-        // getting the random value of the colors
-        //-----------------------------------------------------------
-        let r_pos = Math.floor(Math.random() * 256);
-        let g_pos = Math.floor(Math.random() * 256);
-        let b_pos = Math.floor(Math.random() * 256);
-        let r_neg = 255 - r_pos;
-        let g_neg = 255 - g_pos;
-        let b_neg = 255 - b_pos;
-        //-----------------------------------------------------------
-
-        this.positive = "rgb(" + r_pos + ", " + g_pos + ", " + b_pos + ")";
-        this.negative = "rgb(" + r_neg + ", " + g_neg + ", " + b_neg + ")";
-
+        let [r_pos, g_pos, b_pos] = HSBToRGB(pos, 100, 100);
+        let [r_neg, g_neg, b_neg] = HSBToRGB(neg, 100, 100);
+ 
+        this.positive = `RGB(${r_pos}, ${g_pos}, ${b_pos})`
+        this.negative = `RGB(${r_neg}, ${g_neg}, ${b_neg})`
+        //-------------------------------------------------------------
     }
 }
 
@@ -26,11 +30,7 @@ class Colors
 //----------------------------------------------------------------------------
 
 // identificator of the user
-let name = "ID";
-name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-var results = regex.exec(location.search);
-let uniqueID = results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+let studentIndex = "";
 
 // number of experiments per all proportions
 let expNum = 30;
@@ -80,7 +80,7 @@ let answerTimeId;
 let currentAnswer = "";
 
 // experiment information based on user's answers
-let expInfo = [];
+let expInfo = [[`${colors.positive}`, `${colors.negative}`]];
 
 // experiment table headers
 let expHeaders = [
@@ -96,6 +96,9 @@ const tutorialTrialsCount = 3;
 
 // is debug mode enabled
 let debugMode = false;
+
+// when it's 50:50 it needs to alternate between positive and negative answers
+let positive50Answer = true;
 
 //----------------------------------------------------------------------------
 
@@ -145,6 +148,11 @@ function initKeyEvents()
         
         if (!experimentStarted)
             return;
+            
+        document.addEventListener("keyup", (event) =>
+        {
+            isKeyDown = false;
+        });
         
         if (event.code == "Space")
         {
@@ -154,6 +162,8 @@ function initKeyEvents()
                 openFullscreen();
                 mainDiv.removeChild(document.getElementById("instruction-img"));
                 mainDiv.removeChild(document.getElementById("color-instructions"));
+                studentIndex = document.getElementById("student-index").value;
+                mainDiv.removeChild(document.getElementById("student-index"));
                 mainDiv.removeChild(document.getElementById("proceed-experiment"));
                 createCanvas();
                 nextTrial();
@@ -223,6 +233,12 @@ function startExperiment()
     mainDiv.appendChild(instructionImg);
 
     createColorInstructions(mainDiv);
+
+    let studentNameTextField = document.createElement("input");
+    studentNameTextField.type = "text";
+    studentNameTextField.id = "student-index";
+    studentNameTextField.style.margin = "20px";
+    mainDiv.appendChild(studentNameTextField)
     
     let proceedToExperimentText = document.createElement("h3");
     proceedToExperimentText.id = "proceed-experiment";
@@ -283,24 +299,24 @@ function finishExperiment()
     // formsButton.style.fontSize = "125%";
     // formsButton.style.marginTop = "2%";
     // mainDiv.appendChild(formsButton);
-   
+
     // comment out when not using a server
-    sendDataToServer();
+    // sendDataToServer();
 
     // comment out when using a server
-    // saveCSVFile();
+    saveCSVFile();
 
     document.exitFullscreen();
 
     let endingMessage = document.createElement("h1");
-    endingMessage.innerText = "Eksperiment je završen -> Pristupanje formi...";
+    endingMessage.innerText = "Eksperiment je završen";
     mainDiv.appendChild(endingMessage);
 
 
 
-    setTimeout(() => { 
-        window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b";
-    }, 1500);
+    // setTimeout(() => { 
+    //     window.location.href = "https://docs.google.com/forms/d/1zvKkXhxkU9Bsf7nxOzf8XJIABKPyUw5uc2fZ11i1Pr4/edit?usp=sharing_eil_se_dm&ts=626e777b";
+    // }, 1500);
 
 }
 
@@ -419,7 +435,8 @@ function nextTrial()
     currentPercentage = oddsLeft[ranIndex];
 
     let left = odds.get(currentPercentage.toString());
-    odds.set(currentPercentage.toString(), --left);
+    if (tutorialTrialsCompleted >= tutorialTrialsCount)
+        odds.set(currentPercentage.toString(), --left);
 
     if (odds.get(currentPercentage.toString()) == 0)
     {
@@ -457,7 +474,10 @@ function continuePanel(answeredCorrectly)
 
     // special case
     if (answeredCorrectly == 3)
-        answeredCorrectly = Math.round(Math.random() * 1);
+    {
+        answeredCorrectly = (positive50Answer) ? (1) : (0);
+        positive50Answer = !positive50Answer;
+    }
 
     let mainDiv = document.getElementById("main-container");
     clearCanvas();
@@ -552,7 +572,7 @@ function collectInfoFromStim()
     let isInFullscreen = window.innerHeight == screen.height;
     let timeTook = endTime - startTime;
     let trialAnswerInfo = [
-        uniqueID, currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook, Date(), points, browserName
+        studentIndex, currentAnswer, currentPercentage, 100 - currentPercentage, isInFullscreen, timeTook, Date(), points, browserName
     ];
 
     expInfo.push(trialAnswerInfo);
@@ -625,7 +645,7 @@ function saveCSVFile()
         csvString += row.join(",") + "\n";
     }
     let blob = new Blob([csvString], { type: "text/plain; charset=utf-8;"});
-    saveAs(blob, "eri.csv");
+    saveAs(blob, `eri_${studentIndex}.csv`);
 }
 
 main();
